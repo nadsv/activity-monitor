@@ -65,7 +65,7 @@ export default {
       $q.dialog({
         title: "Confirm",
         message:
-          "Do you really want to delete this item? All these daily activities will be deleted from the calendar",
+          "Do you really want to delete this item? All records about your daily activities will be deleted from the calendar",
         cancel: true,
         persistent: true,
       }).onOk(() => {
