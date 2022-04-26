@@ -32,7 +32,7 @@
       </q-list>
     </div>
     <q-dialog v-model="showAddSettingsItem">
-      <AddSettingsItemModal />
+      <AddSettingsItemModal @formSubmited="closeAddSettingItemModal" />
     </q-dialog>
   </q-page>
 </template>
@@ -48,6 +48,10 @@ const showAddSettingsItem = ref(false);
 
 const toggleAddSettingItemModal = () => {
   showAddSettingsItem.value = !showAddSettingsItem.value;
+};
+
+const closeAddSettingItemModal = () => {
+  showAddSettingsItem.value = false;
 };
 </script>
 
