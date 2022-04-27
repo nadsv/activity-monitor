@@ -4,7 +4,7 @@ import { uid } from "quasar";
 export const useSettingsStore = defineStore("settings", {
   state: () => ({
     activities: [
-      {
+      /* {
         id: "1",
         userId: "0",
         title: "Чтение",
@@ -51,7 +51,7 @@ export const useSettingsStore = defineStore("settings", {
         active: false,
         type: "quantity",
         color: "black",
-      },
+      },*/
     ],
   }),
   getters: {},
