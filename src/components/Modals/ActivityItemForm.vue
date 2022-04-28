@@ -59,31 +59,44 @@ import { ref, reactive, onMounted } from "vue";
 import { useSettingsStore } from "stores/settings";
 
 const typeOptions = ref(["time", "quantity"]);
-const name = ref(null);
+
+const defaultItem = {
+  userId: "0",
+  title: "",
+  active: true,
+  type: "time",
+  color: "#0044aa",
+  id: "0",
+};
 
 const storeSettings = useSettingsStore();
 const props = defineProps({
-  item: {
-    type: Object,
+  formTitle: {
+    type: String,
     required: true,
   },
-  formTitle: {
+  id: {
     type: String,
     required: true,
   },
 });
 
-let activityItem = reactive({ ...props.item });
+let activityItem = reactive({ ...defaultItem });
 
 onMounted(() => {
-  console.log("props", activityItem);
+  if (props.id !== "0") {
+    const item = storeSettings.activities.find((item) => item.id === props.id);
+    Object.assign(activityItem, item);
+  }
 });
 
 const emit = defineEmits(["formSubmited"]);
 
 const submitForm = () => {
-  if (props.formTitle == "Add Activity") {
-    storeSettings.addSettingsItem(activityItem);
+  if (props.id === "0") {
+    storeSettings.addActivityItem(activityItem);
+  } else {
+    storeSettings.updateActivityItem(activityItem);
   }
   emit("formSubmited");
 };

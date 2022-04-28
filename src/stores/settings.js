@@ -4,13 +4,13 @@ import { uid } from "quasar";
 export const useSettingsStore = defineStore("settings", {
   state: () => ({
     activities: [
-      /* {
+      {
         id: "1",
         userId: "0",
         title: "Чтение",
         active: true,
         type: "time",
-        color: "red",
+        color: "#5da356",
       },
       {
         id: "2",
@@ -18,7 +18,7 @@ export const useSettingsStore = defineStore("settings", {
         title: "Программирование и конструирование",
         active: true,
         type: "time",
-        color: "blue",
+        color: "#cf0e0e",
       },
       {
         id: "3",
@@ -51,21 +51,21 @@ export const useSettingsStore = defineStore("settings", {
         active: false,
         type: "quantity",
         color: "black",
-      },*/
+      },
     ],
   }),
   getters: {},
   actions: {
-    updateSettingsItem(payload) {
+    updateActivityItem(payload) {
       const index = this.activities.findIndex((x) => x.id === payload.id);
       this.activities[index] = payload;
     },
-    deleteSettingsItem(id) {
+    deleteActivityItem(id) {
       this.activities = this.activities.filter((item) => item.id !== id);
     },
-    addSettingsItem(payload) {
+    addActivityItem(payload) {
       const itemId = uid();
-      const item = { id: itemId, ...payload };
+      const item = { ...payload, id: itemId };
       this.activities.unshift(item);
     },
   },

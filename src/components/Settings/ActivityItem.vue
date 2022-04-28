@@ -72,7 +72,7 @@ const promtToDelete = () => {
     cancel: true,
     persistent: true,
   }).onOk(() => {
-    storeSettings.deleteSettingsItem(props.id);
+    storeSettings.deleteActivityItem(props.id);
   });
 };
 </script>

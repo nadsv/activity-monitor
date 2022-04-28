@@ -37,8 +37,8 @@
     <q-dialog v-model="showActivityItem">
       <ActivityItemForm
         @formSubmited="closeAddActivityItemModal"
-        :item="activity"
         :formTitle="title"
+        :id="id"
       />
     </q-dialog>
   </q-page>
@@ -54,27 +54,17 @@ const storeSettings = useSettingsStore();
 
 const showActivityItem = ref(false);
 
-const defaultItem = {
-  userId: "0",
-  title: "",
-  active: true,
-  type: "time",
-  color: "#0044aa",
-};
-
-let activity = reactive({ ...defaultItem });
+let id = ref(0);
 let title = ref("Add Activity");
 
 const showAddActivityForm = () => {
-  activity = { ...defaultItem };
+  id.value = "0";
   title.value = "Add Activity";
   showActivityItem.value = true;
 };
 
-const showEditActivityForm = (id) => {
-  const item = storeSettings.activities.find((item) => item.id === id);
-  activity = { ...item };
-  console.log("activity", activity);
+const showEditActivityForm = (value) => {
+  id.value = value;
   title.value = "Edit Activity";
   showActivityItem.value = true;
 };
