@@ -1,10 +1,7 @@
 <template>
   <q-item tag="label">
     <q-item-section avatar>
-      <span
-        class="color-marker"
-        :style="{ 'background-color': `${color}` }"
-      ></span>
+      <ActivityMark :color="color" />
     </q-item-section>
     <q-item-section>
       <q-item-label :lines="3">
@@ -44,6 +41,7 @@
 import { useSettingsStore } from "../../stores/settings";
 import { ref } from "vue";
 import { useQuasar } from "quasar";
+import ActivityMark from "../ActivityMark.vue";
 
 const props = defineProps({
   title: { type: String, required: true },
@@ -73,18 +71,16 @@ const promtToDelete = () => {
     persistent: true,
   }).onOk(() => {
     storeSettings.deleteActivityItem(props.id);
+    $q.notify({
+      message: "The activity was deleted.",
+      color: "info",
+      timeout: 700,
+    });
   });
 };
 </script>
 
 <style scoped>
-.color-marker {
-  display: inline-block;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-}
-
 .q-item__label--caption {
   margin-left: 0 !important;
 }

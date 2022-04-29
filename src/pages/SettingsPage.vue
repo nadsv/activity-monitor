@@ -80,10 +80,6 @@ const closeAddActivityItemModal = () => {
   width: 100%;
 }
 
-.text-underline {
-  text-decoration: underline;
-}
-
 @media (min-width: 1200px) {
   .list-wrapper {
     width: 1000px;
