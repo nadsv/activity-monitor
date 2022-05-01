@@ -11,9 +11,9 @@ const props = defineProps({
 });
 </script>
 
-<style  scoped>
+<style scoped>
 .color-marker {
-  display: inline-block;
+  display: block;
   width: 16px;
   height: 16px;
   border-radius: 50%;

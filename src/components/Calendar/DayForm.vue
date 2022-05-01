@@ -1,37 +1,40 @@
 <template>
   <q-card class="card">
     <q-card-section>
-      <div class="text-secondary text-uppercase text-h5 text-underline">
+      <div
+        class="text-secondary text-center text-uppercase text-h5 text-underline"
+      >
         Report
       </div>
     </q-card-section>
     <table>
       <thead>
-        <tr>
+        <tr class="text-primary">
           <th scope="col">Mark</th>
           <th scope="col">Activity</th>
           <th scope="col">Value</th>
-          <th scope="col">Unit</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="activity in storeCalendar.dayActivities" :key="activity.id">
-          <td data-label="Mark" class="text-center">
-            <ActivityMark :color="activity.color" />
+          <td data-label="Mark">
+            <ActivityMark :color="activity.color" class="mark" />
           </td>
-          <td data-label="Activity" class="text-left">{{ activity.title }}</td>
-          <td data-label="Value" class="center">
-            <q-input
-              v-model.number="activity.value"
-              type="number"
-              min="0"
-              max="1440"
-              dense
-              style="max-width: 70px"
-            />
+          <td data-label="Activity" class="text-left">
+            <div>{{ activity.title }}</div>
           </td>
-          <td data-label="Unit" class="text-center">
-            {{ unit(activity.type) }}
+          <td data-label="Value">
+            <div class="flex flex-center">
+              <q-input
+                v-model.number="activity.value"
+                type="number"
+                min="0"
+                max="1440"
+                dense
+                style="max-width: 70px"
+              />
+              <div>{{ unit(activity.type) }}</div>
+            </div>
           </td>
         </tr>
       </tbody>
@@ -66,6 +69,10 @@ const unit = (type) => {
 <style scoped>
 .card {
   min-width: 290px;
+}
+
+.mark {
+  margin: auto;
 }
 
 table {
@@ -117,8 +124,9 @@ table th {
 
   table td {
     border-bottom: 1px solid #ddd;
-    display: block;
-    text-align: right;
+    display: flex;
+    text-align: left;
+    align-items: center;
   }
 
   table td::before {
@@ -127,16 +135,19 @@ table th {
     content: attr(aria-label);
     */
     content: attr(data-label);
-    width: 70px;
-    float: left;
-    text-align: left;
+    width: 50px;
+    display: block;
     margin-right: 20px;
     font-weight: bold;
-    text-transform: uppercase;
+    text-transform: capitalize;
   }
 
   table td:last-child {
     border-bottom: 0;
+  }
+
+  .mark {
+    margin: 0;
   }
 }
 </style>

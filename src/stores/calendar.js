@@ -16,7 +16,7 @@ export const useCalendarStore = defineStore("calendar", {
         {
           id: "2",
           userId: "0",
-          title: "Программирование и конструирование",
+          title: "Программирование и конструирование моделей будущего",
           type: "time",
           color: "#cf0e0e",
           value: 40,

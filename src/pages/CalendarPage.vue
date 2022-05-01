@@ -1,17 +1,9 @@
 <template>
   <q-page class="q-pa-md">
     <div
-      class="
-        fit
-        row
-        wrap
-        justify-center
-        items-start
-        content-start
-        q-gutter-x-lg q-gutter-y-md
-      "
+      class="fit row wrap justify-center items-start content-center q-gutter-y-lg"
     >
-      <q-date v-model="date" :events="events" />
+      <q-date v-model="date" :events="events" class="date-checker" />
       <DayForm />
     </div>
   </q-page>
@@ -26,4 +18,12 @@ const events = ref(["2022/05/05", "2022/05/01", "2022/05/03"]);
 </script>
 
 <style scoped>
+.date-checker {
+  margin-right: 50px;
+}
+@media screen and (max-width: 600px) {
+  .date-checker {
+    margin-right: 0;
+  }
+}
 </style>
