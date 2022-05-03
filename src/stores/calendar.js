@@ -1,8 +1,10 @@
 import { defineStore } from "pinia";
+import { formatedToday } from "src/utils";
 
 export const useCalendarStore = defineStore("calendar", {
   state: () => ({
-    date: "2021-04-29",
+    date: formatedToday(),
+    dates: ["2022/05/01", "2022/05/02"],
     report: {
       activities: [
         {
@@ -49,7 +51,6 @@ export const useCalendarStore = defineStore("calendar", {
           id: "6",
           userId: "0",
           title: "Тщательная чистка чайного гриба",
-          active: false,
           type: "quantity",
           color: "black",
           value: 1,
@@ -64,6 +65,9 @@ export const useCalendarStore = defineStore("calendar", {
     },
   },
   actions: {
+    setDate(date) {
+      this.date = date;
+    },
     updateActivityItem(payload) {
       /*/ const index = this.activities.findIndex((x) => x.id === payload.id);
       this.activities[index] = payload;*/

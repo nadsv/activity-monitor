@@ -54,7 +54,17 @@ export const useSettingsStore = defineStore("settings", {
       },
     ],
   }),
-  getters: {},
+  getters: {
+    pattern(state) {
+      let dailyPattern = [];
+      for (const activity of state.activities) {
+        if (activity.active) {
+          dailyPattern.push({ ...activity, value: 0 });
+        }
+      }
+      return dailyPattern;
+    },
+  },
   actions: {
     updateActivityItem(payload) {
       const index = this.activities.findIndex((x) => x.id === payload.id);

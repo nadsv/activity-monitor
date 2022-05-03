@@ -3,18 +3,36 @@
     <div
       class="fit row wrap justify-center items-start content-center q-gutter-y-lg"
     >
-      <q-date v-model="date" :events="events" class="date-checker" />
+      <q-date
+        v-model="date"
+        :events="calendarStore.dates"
+        class="date-checker"
+        :locale="myLocale"
+      />
       <DayForm />
     </div>
   </q-page>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import DayForm from "../components/Calendar/DayForm.vue";
+import { useCalendarStore } from "stores/calendar";
+import { useSettingsStore } from "stores/settings";
 
-const date = ref("2022/05/05");
-const events = ref(["2022/05/05", "2022/05/01", "2022/05/03"]);
+const calendarStore = useCalendarStore();
+const settingsStore = useSettingsStore();
+const date = ref(calendarStore.date);
+
+const myLocale = {
+  firstDayOfWeek: 1,
+  format24h: true,
+};
+
+watch(date, (date, prevDate) => {
+  const index = calendarStore.dates.indexOf(date);
+  console.log(index, "index");
+});
 </script>
 
 <style scoped>

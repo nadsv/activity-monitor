@@ -33,7 +33,7 @@
                 dense
                 style="max-width: 70px"
               />
-              <div>{{ unit(activity.type) }}</div>
+              <div style="width: 40px">{{ unit(activity.type) }}</div>
             </div>
           </td>
         </tr>
@@ -41,7 +41,12 @@
     </table>
     <q-card-section>
       <div class="text-subtitle2">Note</div>
-      <q-input v-model="note" filled autogrow type="textarea" />
+      <q-input
+        v-model="storeCalendar.report.note"
+        filled
+        autogrow
+        type="textarea"
+      />
     </q-card-section>
 
     <q-card-actions vertical align="right">
@@ -53,17 +58,13 @@
 <script setup>
 import { ref } from "vue";
 import { useCalendarStore } from "stores/calendar";
+
 import ActivityMark from "../ActivityMark.vue";
 
 const note = ref("");
 const storeCalendar = useCalendarStore();
 
-const unit = (type) => {
-  if (type === "time") {
-    return "min";
-  }
-  return "times";
-};
+const unit = (type) => (type === "time" ? "min" : "times");
 </script>
 
 <style scoped>
