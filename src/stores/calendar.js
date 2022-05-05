@@ -3,8 +3,9 @@ import { formatedToday, deepCopyFunction } from "src/utils";
 
 export const useCalendarStore = defineStore("calendar", {
   state: () => ({
-    date: formatedToday(),
     dates: ["2022/05/01", "2022/05/02", "2022/05/04"],
+    id: "uniqueId",
+    date: formatedToday(),
     activities: [
       {
         id: "1",
@@ -63,14 +64,18 @@ export const useCalendarStore = defineStore("calendar", {
     },
   },
   actions: {
-    updateActivityItem(payload) {
+    setDate(date) {
+      this.date = date;
+    },
+    updateReport(report) {
       /*/ const index = this.activities.findIndex((x) => x.id === payload.id);
       this.activities[index] = payload;*/
+      console.log(report);
     },
-    deleteActivityItem(id) {
+    deleteReport(id) {
       //this.activities = this.activities.filter((item) => item.id !== id);
     },
-    addActivityItem(payload) {
+    addReport(payload) {
       /*const itemId = uid();
       const item = { ...payload, id: itemId };
       this.activities.unshift(item);*/

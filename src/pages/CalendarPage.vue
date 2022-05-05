@@ -12,42 +12,60 @@
       "
     >
       <q-date
-        v-model="calendarStore.date"
+        v-model="date"
         :events="calendarStore.dates"
         class="date-checker"
         :locale="myLocale"
       />
-      <DayForm :report="report" />
+      <DayForm
+        :activities="activities"
+        :note="note"
+        :id="id"
+        :date="calendarStore.date"
+      />
     </div>
   </q-page>
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, onMounted, watch, onBeforeMount } from "vue";
 import DayForm from "../components/Calendar/DayForm.vue";
 import { useCalendarStore } from "stores/calendar";
 import { useSettingsStore } from "stores/settings";
 
 const calendarStore = useCalendarStore();
 const settingsStore = useSettingsStore();
+const date = ref(calendarStore.date);
+let note = ref("");
+let activities = ref([]);
+let id = ref("");
 
 const myLocale = {
   firstDayOfWeek: 1,
   format24h: true,
 };
 
-let report = computed(() => {
-  const index = calendarStore.dates.indexOf(calendarStore.date);
+const createFieldList = (date) => {
+  const index = calendarStore.dates.indexOf(date);
   if (index > -1) {
-    return {
-      activities: calendarStore.reportActivities,
-      note: calendarStore.note,
-    };
+    activities.value = [...calendarStore.reportActivities];
+    note.value = calendarStore.note;
+    id.value = calendarStore.id;
   } else {
-    return {
-      activities: settingsStore.pattern,
-      note: "",
-    };
+    activities.value = [...settingsStore.pattern];
+    note.value = "";
+    id.value = "0";
+  }
+};
+
+onBeforeMount(() => {
+  createFieldList(date.value);
+});
+
+watch(date, (curDate, prevDate) => {
+  if (curDate !== null) {
+    createFieldList(curDate);
+    calendarStore.setDate(curDate);
   }
 });
 </script>

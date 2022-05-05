@@ -19,7 +19,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="activity in currentReport.activities" :key="activity.id">
+          <tr v-for="activity in activities" :key="activity.id">
             <td data-label="Mark">
               <ActivityMark :color="activity.color" class="mark" />
             </td>
@@ -44,7 +44,7 @@
       </table>
       <q-card-section>
         <div class="text-subtitle2">Note</div>
-        <q-input v-model="currentReport.note" filled autogrow type="textarea" />
+        <q-input v-model="note" filled autogrow type="textarea" />
       </q-card-section>
 
       <q-card-actions vertical align="right">
@@ -55,36 +55,52 @@
 </template>
 
 <script setup>
-import { reactive, watch, onMounted } from "vue";
-
+import { ref, watch, onMounted } from "vue";
+import { useCalendarStore } from "stores/calendar";
 import ActivityMark from "../ActivityMark.vue";
 
 const props = defineProps({
-  report: {
-    type: Object,
+  id: {
+    type: String,
+    required: true,
+  },
+  note: {
+    type: String,
+    required: true,
+  },
+  activities: {
+    type: Array,
+    required: true,
+  },
+  date: {
+    type: String,
     required: true,
   },
 });
 
-let currentReport = reactive({ activities: [], note: "" });
+const calendarStore = useCalendarStore();
+
+let activities = ref([]);
+let note = ref("");
 
 const unit = (type) => (type === "time" ? "min" : "times");
 
 onMounted(() => {
-  currentReport.activities = props.report.activities;
-  currentReport.note = props.report.note;
+  console.log("dayForm activities", props.activities, props.note);
+  activities.value = props.activities;
+  note.value = props.note;
 });
 
 watch(
-  () => props.report,
+  () => props.date,
   () => {
-    currentReport.activities = props.report.activities;
-    currentReport.note = props.report.note;
+    activities.value = props.activities;
+    note.value = props.note;
   }
 );
 
 const submitForm = () => {
-  console.log("hello");
+  calendarStore.updateReport(currentReport);
 };
 </script>
 
