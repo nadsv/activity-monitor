@@ -1,37 +1,54 @@
 <template>
   <q-page class="q-pa-md">
     <div
-      class="fit row wrap justify-center items-start content-center q-gutter-y-lg"
+      class="
+        fit
+        row
+        wrap
+        justify-center
+        items-start
+        content-center
+        q-gutter-y-lg
+      "
     >
       <q-date
-        v-model="date"
+        v-model="calendarStore.date"
         :events="calendarStore.dates"
         class="date-checker"
         :locale="myLocale"
       />
-      <DayForm />
+      <DayForm :report="report" />
     </div>
   </q-page>
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, computed } from "vue";
 import DayForm from "../components/Calendar/DayForm.vue";
 import { useCalendarStore } from "stores/calendar";
 import { useSettingsStore } from "stores/settings";
 
 const calendarStore = useCalendarStore();
 const settingsStore = useSettingsStore();
-const date = ref(calendarStore.date);
 
 const myLocale = {
   firstDayOfWeek: 1,
   format24h: true,
 };
 
-watch(date, (date, prevDate) => {
-  const index = calendarStore.dates.indexOf(date);
-  console.log(index, "index");
+let report = computed(() => {
+  const index = calendarStore.dates.indexOf(calendarStore.date);
+  if (index > -1) {
+    return {
+      activities: calendarStore.reportActivities,
+      note: calendarStore.note,
+    };
+  } else {
+    return {
+      activities: settingsStore.pattern,
+      note: "",
+    };
+  }
 });
 </script>
 

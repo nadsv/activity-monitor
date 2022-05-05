@@ -56,8 +56,6 @@ const emit = defineEmits(["edit"]);
 const $q = useQuasar();
 const storeSettings = useSettingsStore();
 
-const isActive = ref(props.active);
-
 const editButtonClick = () => {
   emit("edit");
 };

@@ -1,70 +1,91 @@
 <template>
   <q-card class="card">
-    <q-card-section>
-      <div
-        class="text-secondary text-center text-uppercase text-h5 text-underline"
-      >
-        Report
-      </div>
-    </q-card-section>
-    <table>
-      <thead>
-        <tr class="text-primary">
-          <th scope="col">Mark</th>
-          <th scope="col">Activity</th>
-          <th scope="col">Value</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="activity in storeCalendar.dayActivities" :key="activity.id">
-          <td data-label="Mark">
-            <ActivityMark :color="activity.color" class="mark" />
-          </td>
-          <td data-label="Activity" class="text-left">
-            <div>{{ activity.title }}</div>
-          </td>
-          <td data-label="Value">
-            <div class="flex flex-center">
-              <q-input
-                v-model.number="activity.value"
-                type="number"
-                min="0"
-                max="1440"
-                dense
-                style="max-width: 70px"
-              />
-              <div style="width: 40px">{{ unit(activity.type) }}</div>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <q-card-section>
-      <div class="text-subtitle2">Note</div>
-      <q-input
-        v-model="storeCalendar.report.note"
-        filled
-        autogrow
-        type="textarea"
-      />
-    </q-card-section>
+    <q-form @submit="submitForm" greedy>
+      <q-card-section>
+        <div
+          class="
+            text-secondary text-center text-uppercase text-h5 text-underline
+          "
+        >
+          Report
+        </div>
+      </q-card-section>
+      <table>
+        <thead>
+          <tr class="text-primary">
+            <th scope="col">Mark</th>
+            <th scope="col">Activity</th>
+            <th scope="col">Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="activity in currentReport.activities" :key="activity.id">
+            <td data-label="Mark">
+              <ActivityMark :color="activity.color" class="mark" />
+            </td>
+            <td data-label="Activity" class="text-left">
+              <div>{{ activity.title }}</div>
+            </td>
+            <td data-label="Value">
+              <div class="flex flex-center">
+                <q-input
+                  v-model.number="activity.value"
+                  type="number"
+                  min="0"
+                  max="1440"
+                  dense
+                  style="max-width: 70px"
+                />
+                <div style="width: 40px">{{ unit(activity.type) }}</div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <q-card-section>
+        <div class="text-subtitle2">Note</div>
+        <q-input v-model="currentReport.note" filled autogrow type="textarea" />
+      </q-card-section>
 
-    <q-card-actions vertical align="right">
-      <q-btn color="secondary">Save</q-btn>
-    </q-card-actions>
+      <q-card-actions vertical align="right">
+        <q-btn color="secondary" type="submit">Save</q-btn>
+      </q-card-actions>
+    </q-form>
   </q-card>
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useCalendarStore } from "stores/calendar";
+import { reactive, watch, onMounted } from "vue";
 
 import ActivityMark from "../ActivityMark.vue";
 
-const note = ref("");
-const storeCalendar = useCalendarStore();
+const props = defineProps({
+  report: {
+    type: Object,
+    required: true,
+  },
+});
+
+let currentReport = reactive({ activities: [], note: "" });
 
 const unit = (type) => (type === "time" ? "min" : "times");
+
+onMounted(() => {
+  currentReport.activities = props.report.activities;
+  currentReport.note = props.report.note;
+});
+
+watch(
+  () => props.report,
+  () => {
+    currentReport.activities = props.report.activities;
+    currentReport.note = props.report.note;
+  }
+);
+
+const submitForm = () => {
+  console.log("hello");
+};
 </script>
 
 <style scoped>
