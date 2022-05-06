@@ -73,6 +73,10 @@ onBeforeMount(() => {
 });
 
 watch(date, (curDate, prevDate) => {
+  if (new Date(curDate).getMonth() !== new Date(prevDate).getMonth()) {
+    console.log("Month changed");
+  }
+
   if (curDate !== null) {
     createFieldList(curDate);
     calendarStore.setDate(curDate);
