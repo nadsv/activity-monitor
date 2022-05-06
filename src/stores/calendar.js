@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { formatedToday, deepCopyFunction } from "src/utils";
+import { uid } from "quasar";
 
 export const useCalendarStore = defineStore("calendar", {
   state: () => ({
@@ -68,17 +69,23 @@ export const useCalendarStore = defineStore("calendar", {
       this.date = date;
     },
     updateReport(report) {
-      /*/ const index = this.activities.findIndex((x) => x.id === payload.id);
-      this.activities[index] = payload;*/
+      this.id = report.id;
+      this.note = report.note;
+      this.activities = deepCopyFunction(report.activities);
       console.log(report);
     },
     deleteReport(id) {
-      //this.activities = this.activities.filter((item) => item.id !== id);
+      this.id = "";
+      this.note = "";
+      this.activities = [];
+      console.log(report);
     },
-    addReport(payload) {
-      /*const itemId = uid();
-      const item = { ...payload, id: itemId };
-      this.activities.unshift(item);*/
+    addReport(report) {
+      this.id = uid();
+      this.note = report.note;
+      this.activities = deepCopyFunction(report.activities);
+      this.dates.push(this.date);
+      console.log(report);
     },
   },
 });

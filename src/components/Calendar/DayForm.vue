@@ -86,7 +86,6 @@ let note = ref("");
 const unit = (type) => (type === "time" ? "min" : "times");
 
 onMounted(() => {
-  console.log("dayForm activities", props.activities, props.note);
   activities.value = props.activities;
   note.value = props.note;
 });
@@ -100,7 +99,16 @@ watch(
 );
 
 const submitForm = () => {
-  calendarStore.updateReport(currentReport);
+  const currentReport = {
+    id: props.id,
+    note: note.value,
+    activities: activities.value,
+  };
+  if (props.id === "0") {
+    calendarStore.addReport(currentReport);
+  } else {
+    calendarStore.updateReport(currentReport);
+  }
 };
 </script>
 

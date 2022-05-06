@@ -45,14 +45,24 @@ const myLocale = {
   format24h: true,
 };
 
+const pattern = () => {
+  let dailyPattern = [];
+  for (const activity of settingsStore.activities) {
+    if (activity.active) {
+      dailyPattern.push({ ...activity, value: 0 });
+    }
+  }
+  return dailyPattern;
+};
+
 const createFieldList = (date) => {
   const index = calendarStore.dates.indexOf(date);
   if (index > -1) {
-    activities.value = [...calendarStore.reportActivities];
+    activities.value = calendarStore.reportActivities;
     note.value = calendarStore.note;
     id.value = calendarStore.id;
   } else {
-    activities.value = [...settingsStore.pattern];
+    activities.value = pattern();
     note.value = "";
     id.value = "0";
   }
