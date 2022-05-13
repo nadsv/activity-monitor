@@ -45,10 +45,11 @@
 </template>
 
 <script setup>
-import { ref, reactive } from "vue";
+import { ref, onMounted } from "vue";
 import { useSettingsStore } from "stores/settings";
 import ActivityItem from "../components/Settings/ActivityItem.vue";
 import ActivityItemForm from "../components/Modals/ActivityItemForm.vue";
+import { api } from "boot/axios";
 
 const storeSettings = useSettingsStore();
 
@@ -72,6 +73,10 @@ const showEditActivityForm = (value) => {
 const closeAddActivityItemModal = () => {
   showActivityItem.value = false;
 };
+
+onMounted(() => {
+  storeSettings.setActivities();
+});
 </script>
 
 <style scoped>

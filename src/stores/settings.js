@@ -1,62 +1,22 @@
 import { defineStore } from "pinia";
 import { uid } from "quasar";
-import { deepCopyFunction } from "src/utils";
+import { api } from "boot/axios";
 
 export const useSettingsStore = defineStore("settings", {
   state: () => ({
-    activities: [
-      {
-        id: "1",
-        userId: "0",
-        title: "Чтение",
-        active: true,
-        type: "time",
-        color: "#5da356",
-      },
-      {
-        id: "2",
-        userId: "0",
-        title: "Программирование и конструирование",
-        active: true,
-        type: "time",
-        color: "#cf0e0e",
-      },
-      {
-        id: "3",
-        userId: "0",
-        title: "Фитнес",
-        active: true,
-        type: "time",
-        color: "#00ab3c",
-      },
-      {
-        id: "4",
-        userId: "0",
-        title: "Английский",
-        active: true,
-        type: "time",
-        color: "orange",
-      },
-      {
-        id: "5",
-        userId: "0",
-        title: "Испанский",
-        active: false,
-        type: "time",
-        color: "yellow",
-      },
-      {
-        id: "6",
-        userId: "0",
-        title: "Тщательная чистка чайного гриба",
-        active: false,
-        type: "quantity",
-        color: "black",
-      },
-    ],
+    activities: [],
   }),
   getters: {},
   actions: {
+    async setActivities() {
+      this.activities = api.get("/api/settings");
+      try {
+        const response = await api.get("/api/settings");
+        this.activities = response.data;
+      } catch (error) {
+        throw new Error(`Error`);
+      }
+    },
     updateActivityItem(payload) {
       const index = this.activities.findIndex((x) => x.id === payload.id);
       this.activities[index] = payload;
