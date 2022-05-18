@@ -64,16 +64,11 @@ const promtToDelete = () => {
   $q.dialog({
     title: "Confirm",
     message:
-      "Do you really want to delete this item? All records about your daily activities will be deleted from the calendar",
+      "Do you really want to delete this item? All records with this daily activity will be deleted from the calendar",
     cancel: true,
     persistent: true,
   }).onOk(() => {
     storeSettings.deleteActivityItem(props.id);
-    $q.notify({
-      message: "The activity was deleted.",
-      color: "info",
-      timeout: 700,
-    });
   });
 };
 </script>

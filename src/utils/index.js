@@ -1,3 +1,13 @@
+import { Notify } from "quasar";
+
+export const showError = (text, error) => {
+  Notify.create({
+    message: `${text}: ${error}`,
+    color: "negative",
+    timeout: 700,
+  });
+};
+
 export const formatedToday = () => {
   const now = new Date().toISOString().split("T")[0].split("-");
   return `${now[0]}/${now[1]}/${now[2]}`;

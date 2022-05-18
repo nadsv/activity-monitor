@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { uid } from "quasar";
 import { api } from "boot/axios";
+import { showError } from "../utils";
 
 export const useSettingsStore = defineStore("settings", {
   state: () => ({
@@ -9,25 +10,48 @@ export const useSettingsStore = defineStore("settings", {
   getters: {},
   actions: {
     async setActivities() {
-      this.activities = api.get("/api/settings");
       try {
         const response = await api.get("/api/settings");
-        this.activities = response.data;
+        this.activities = response.data.map((item) => ({
+          ...item,
+          active: item.active === 1 ? true : false,
+        }));
       } catch (error) {
-        throw new Error(`Error`);
+        showError("Error of receiving data", error);
       }
     },
-    updateActivityItem(payload) {
-      const index = this.activities.findIndex((x) => x.id === payload.id);
-      this.activities[index] = payload;
+
+    async updateActivityItem(payload) {
+      try {
+        const response = await api.put(
+          "/api/settings/" + payload.id,
+          JSON.stringify(payload)
+        );
+        const index = this.activities.findIndex((x) => x.id === payload.id);
+        this.activities[index] = payload;
+      } catch (error) {
+        showError("Error of updating data", error);
+      }
     },
-    deleteActivityItem(id) {
-      this.activities = this.activities.filter((item) => item.id !== id);
+
+    async deleteActivityItem(id) {
+      try {
+        const response = await api.delete("/api/settings/" + id);
+        this.activities = this.activities.filter((item) => item.id !== id);
+      } catch (error) {
+        showError("Error of deleting data", error);
+      }
     },
-    addActivityItem(payload) {
+
+    async addActivityItem(payload) {
       const itemId = uid();
       const item = { ...payload, id: itemId };
-      this.activities.unshift(item);
+      try {
+        const response = await api.post("/api/settings", JSON.stringify(item));
+        this.activities.unshift(item);
+      } catch (error) {
+        showError("Error of saving data", error);
+      }
     },
   },
 });
