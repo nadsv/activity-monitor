@@ -10,7 +10,7 @@
           Report
         </div>
       </q-card-section>
-      <table>
+      <table v-if="activities.length > 0">
         <thead>
           <tr class="text-primary">
             <th scope="col">Mark</th>
@@ -42,6 +42,12 @@
           </tr>
         </tbody>
       </table>
+      <q-banner v-else class="bg-info text-white">
+        Add daily activities in Settings.
+        <template v-slot:action>
+          <q-btn flat color="white" label="Settings" :to="'/settings'" />
+        </template>
+      </q-banner>
       <q-card-section>
         <div class="text-subtitle2">Note</div>
         <q-input v-model="note" filled autogrow type="textarea" />
@@ -127,6 +133,7 @@ table {
   margin: 0;
   padding: 0;
   table-layout: fixed;
+  min-width: 100%;
 }
 
 table tr {
