@@ -1,10 +1,16 @@
 import { defineStore } from "pinia";
-import { formatedToday, deepCopyFunction } from "src/utils";
-import { uid } from "quasar";
+import { uid, Loading, QSpinnerHourglass } from "quasar";
+import { api } from "boot/axios";
+import { showError, formatedToday, deepCopyFunction } from "../utils";
+
+const loaderConfig = {
+  spinner: QSpinnerHourglass,
+};
 
 export const useCalendarStore = defineStore("calendar", {
   state: () => ({
     dates: ["2022/05/01", "2022/05/02", "2022/05/04"],
+    reports: [],
     id: "uniqueId",
     date: formatedToday(),
     activities: [
@@ -57,16 +63,38 @@ export const useCalendarStore = defineStore("calendar", {
         value: 1,
       },
     ],
-    note: "It was a wonderful day. I want to remember about it till the end of my life.",
+    note: "",
   }),
   getters: {
     reportActivities(state) {
       return deepCopyFunction(state.activities);
     },
+    datesInMonth(state) {
+      return state.reports.map((report) => report.date);
+    },
   },
   actions: {
     setDate(date) {
       this.date = date;
+    },
+    async getReports(payload) {
+      Loading.show(loaderConfig);
+      try {
+        const response = await api.get("/api/report", {
+          params: {
+            year: payload.year,
+            month: payload.month,
+          },
+        });
+        this.reports = response.data.map((report) => ({
+          ...report,
+          date: report.date.replace("-", "/"),
+        }));
+        Loading.hide();
+      } catch (error) {
+        showError("Error of receiving data", error);
+        Loading.hide();
+      }
     },
     updateReport(report) {
       this.id = report.id;
