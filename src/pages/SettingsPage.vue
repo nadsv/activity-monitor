@@ -36,7 +36,7 @@
     </div>
     <q-dialog v-model="showActivityItem">
       <ActivityItemForm
-        @formSubmited="closeAddActivityItemModal"
+        @formSubmited="saveActivity"
         :formTitle="title"
         :id="id"
       />
@@ -70,7 +70,12 @@ const showEditActivityForm = (value) => {
   showActivityItem.value = true;
 };
 
-const closeAddActivityItemModal = () => {
+const saveActivity = (item) => {
+  if (item.id === "0") {
+    storeSettings.addActivityItem(item);
+  } else {
+    storeSettings.updateActivityItem(item);
+  }
   showActivityItem.value = false;
 };
 
