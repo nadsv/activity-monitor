@@ -72,6 +72,8 @@ onBeforeMount(() => {
   createFieldList(date.value);
 });
 
+onMounted(() => calendarStore.getReports({ year: 2022, month: 5 }));
+
 watch(date, (curDate, prevDate) => {
   if (new Date(curDate).getMonth() !== new Date(prevDate).getMonth()) {
     console.log("Month changed");
