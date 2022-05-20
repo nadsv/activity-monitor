@@ -4,7 +4,7 @@ export const showError = (text, error) => {
   Notify.create({
     message: `${text}: ${error}`,
     color: "negative",
-    timeout: 700,
+    timeout: 2000,
   });
 };
 
