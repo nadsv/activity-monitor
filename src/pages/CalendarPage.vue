@@ -17,6 +17,7 @@
         class="date-checker"
         :locale="myLocale"
         :emit-immediately="true"
+        :navigation-max-year-month="navigationMaxYearMonth"
       />
       <DayForm
         :activities="activities"
@@ -41,6 +42,10 @@ const date = ref(calendarStore.date);
 let note = ref("");
 let activities = ref([]);
 let id = ref("");
+const today = new Date();
+const MONTH = today.getMonth() + 1;
+const YEAR = today.getFullYear();
+const navigationMaxYearMonth = ref(`${YEAR}/${("0" + MONTH).substring(0, 2)}`);
 
 const myLocale = {
   firstDayOfWeek: 1,
@@ -75,10 +80,7 @@ onBeforeMount(() => {
 });
 
 onMounted(() => {
-  const date = new Date();
-  const month = date.getMonth() + 1;
-  const year = date.getFullYear();
-  calendarStore.getReports({ year, month });
+  calendarStore.getReports({ year: YEAR, month: MONTH });
 });
 
 const changeMonthYear = debounce(function (cur) {
