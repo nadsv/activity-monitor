@@ -9,7 +9,6 @@ const loaderConfig = {
 
 export const useCalendarStore = defineStore("calendar", {
   state: () => ({
-    dates: ["2022/05/01", "2022/05/02", "2022/05/04"],
     reports: [],
     id: "uniqueId",
     date: formatedToday(),
@@ -78,7 +77,20 @@ export const useCalendarStore = defineStore("calendar", {
       this.date = date;
     },
     async getReports(payload) {
+      const loaded = this.reports.some((item) => {
+        const itemDate = new Date(item.date);
+        return (
+          itemDate.getMonth() + 1 == payload.month &&
+          itemDate.getFullYear() == payload.year
+        );
+      });
+
+      console.log("loaded", loaded);
+
+      if (loaded) return;
+
       Loading.show(loaderConfig);
+
       try {
         const response = await api.get("/api/report", {
           params: {
@@ -86,10 +98,11 @@ export const useCalendarStore = defineStore("calendar", {
             month: payload.month,
           },
         });
-        this.reports = response.data.map((report) => ({
+        const newReports = response.data.map((report) => ({
           ...report,
           date: report.date.replace("-", "/"),
         }));
+        this.reports = [...this.reports, ...newReports];
         Loading.hide();
       } catch (error) {
         showError("Error of receiving data", error);

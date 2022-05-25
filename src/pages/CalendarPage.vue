@@ -13,9 +13,10 @@
     >
       <q-date
         v-model="date"
-        :events="calendarStore.dates"
+        :events="calendarStore.datesInMonth"
         class="date-checker"
         :locale="myLocale"
+        :emit-immediately="true"
       />
       <DayForm
         :activities="activities"
@@ -32,6 +33,7 @@ import { ref, onMounted, watch, onBeforeMount } from "vue";
 import DayForm from "../components/Calendar/DayForm.vue";
 import { useCalendarStore } from "stores/calendar";
 import { useSettingsStore } from "stores/settings";
+import { debounce } from "quasar";
 
 const calendarStore = useCalendarStore();
 const settingsStore = useSettingsStore();
@@ -56,7 +58,7 @@ const pattern = () => {
 };
 
 const createFieldList = (date) => {
-  const index = calendarStore.dates.indexOf(date);
+  const index = calendarStore.datesInMonth.indexOf(date);
   if (index > -1) {
     activities.value = calendarStore.reportActivities;
     note.value = calendarStore.note;
@@ -72,11 +74,25 @@ onBeforeMount(() => {
   createFieldList(date.value);
 });
 
-onMounted(() => calendarStore.getReports({ year: 2022, month: 5 }));
+onMounted(() => {
+  const date = new Date();
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear();
+  calendarStore.getReports({ year, month });
+});
+
+const changeMonthYear = debounce(function (cur) {
+  calendarStore.getReports({
+    year: cur.getFullYear(),
+    month: cur.getMonth() + 1,
+  });
+}, 1000);
 
 watch(date, (curDate, prevDate) => {
-  if (new Date(curDate).getMonth() !== new Date(prevDate).getMonth()) {
-    console.log("Month changed");
+  const cur = new Date(curDate);
+  const prev = new Date(prevDate);
+  if (cur.getMonth() !== prev.getMonth() || cur.getYear() !== prev.getYear()) {
+    changeMonthYear(cur);
   }
 
   if (curDate !== null) {
