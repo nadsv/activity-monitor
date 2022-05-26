@@ -1,5 +1,5 @@
 <template>
-  <q-item tag="label">
+  <q-item>
     <q-item-section avatar>
       <ActivityMark :color="color" />
     </q-item-section>
@@ -21,7 +21,7 @@
           dense
           round
           icon="delete"
-          @click="promtToDelete"
+          @click.stop="promtToDelete"
         />
         <q-btn
           size="16px"
@@ -30,7 +30,7 @@
           dense
           round
           icon="edit"
-          @click="editButtonClick"
+          @click.stop="editButtonClick"
         />
       </div>
     </q-item-section>
