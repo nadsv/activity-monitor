@@ -27,6 +27,7 @@ export const useCalendarStore = defineStore("calendar", {
     setDate(date) {
       this.date = date;
     },
+
     async setReportActivities(date) {
       this.activities = [];
       const report = this.reports.find((item) => item.date === date);
@@ -44,6 +45,7 @@ export const useCalendarStore = defineStore("calendar", {
         }
       }
     },
+
     async getReports(payload) {
       const loaded = this.reports.some((item) => {
         const itemDate = new Date(item.date);
@@ -75,24 +77,47 @@ export const useCalendarStore = defineStore("calendar", {
         Loading.hide();
       }
     },
+
     updateReport(report) {
       this.id = report.id;
       this.note = report.note;
       this.activities = deepCopyFunction(report.activities);
       console.log(report);
     },
+
     deleteReport(id) {
       this.id = "";
       this.note = "";
       this.activities = [];
       console.log(report);
     },
-    addReport(report) {
+
+    async addReport(report) {
       this.id = uid();
       this.note = report.note;
       this.activities = deepCopyFunction(report.activities);
-      this.dates.push(this.date);
-      console.log(report);
+      Loading.show(loaderConfig);
+
+      const payload = {
+        id: this.id,
+        note: this.note,
+        date: this.date,
+        userId: 0, //change this constant!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        activities: this.activities,
+      };
+
+      try {
+        const response = await api.post("/api/report", JSON.stringify(payload));
+        const newReports = response.data.map((report) => ({
+          ...report,
+          date: report.date.replace("-", "/"),
+        }));
+        this.reports = [...this.reports, ...newReports];
+        Loading.hide();
+      } catch (error) {
+        showError("Error of receiving data", error);
+        Loading.hide();
+      }
     },
   },
 });

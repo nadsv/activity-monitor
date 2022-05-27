@@ -1,6 +1,6 @@
 <template>
   <q-card class="card">
-    <q-form @submit="submitForm" greedy>
+    <q-form @submit="saveForm" greedy>
       <q-card-section>
         <div
           class="
@@ -52,8 +52,8 @@
         <div class="text-subtitle2">Note</div>
         <q-input v-model="note" filled autogrow type="textarea" />
       </q-card-section>
-
-      <q-card-actions vertical align="right">
+      <q-card-actions align="right">
+        <q-btn color="negative" type="button" @click="clearForm">Clear</q-btn>
         <q-btn color="secondary" type="submit">Save</q-btn>
       </q-card-actions>
     </q-form>
@@ -96,8 +96,6 @@ watch(
   () => {
     activities.value = props.activities;
     note.value = props.note;
-    console.log("note", note.value);
-    console.log("props", props);
   }
 );
 
@@ -106,7 +104,7 @@ onMounted(() => {
   note.value = props.note;
 });
 
-const submitForm = () => {
+const saveForm = () => {
   const currentReport = {
     id: props.id,
     note: note.value,
@@ -117,6 +115,10 @@ const submitForm = () => {
   } else {
     calendarStore.updateReport(currentReport);
   }
+};
+
+const clearForm = () => {
+  console.log("clearForm");
 };
 </script>
 
