@@ -65,13 +65,19 @@ const pattern = () => {
 const createFieldList = (date) => {
   const index = calendarStore.datesInMonth.indexOf(date);
   if (index > -1) {
-    activities.value = calendarStore.reportActivities;
-    note.value = calendarStore.note;
-    id.value = calendarStore.id;
+    calendarStore.setReportActivities(date).then(() => {
+      activities.value = calendarStore.reportActivities;
+      note.value = calendarStore.note;
+      id.value = calendarStore.id;
+      console.log("then: ", activities.value, id.value);
+      console.log(date);
+      calendarStore.setDate(date);
+    });
   } else {
     activities.value = pattern();
     note.value = "";
     id.value = "0";
+    calendarStore.setDate(date);
   }
 };
 
@@ -99,7 +105,6 @@ watch(date, (curDate, prevDate) => {
 
   if (curDate !== null) {
     createFieldList(curDate);
-    calendarStore.setDate(curDate);
   }
 });
 </script>

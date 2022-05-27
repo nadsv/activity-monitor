@@ -91,18 +91,20 @@ let note = ref("");
 
 const unit = (type) => (type === "time" ? "min" : "times");
 
-onMounted(() => {
-  activities.value = props.activities;
-  note.value = props.note;
-});
-
 watch(
   () => props.date,
   () => {
     activities.value = props.activities;
     note.value = props.note;
+    console.log("note", note.value);
+    console.log("props", props);
   }
 );
+
+onMounted(() => {
+  activities.value = props.activities;
+  note.value = props.note;
+});
 
 const submitForm = () => {
   const currentReport = {

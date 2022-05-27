@@ -12,56 +12,7 @@ export const useCalendarStore = defineStore("calendar", {
     reports: [],
     id: "uniqueId",
     date: formatedToday(),
-    activities: [
-      {
-        id: "1",
-        userId: "0",
-        title: "Чтение",
-        type: "time",
-        color: "#5da356",
-        value: 50,
-      },
-      {
-        id: "2",
-        userId: "0",
-        title: "Программирование и конструирование моделей будущего",
-        type: "time",
-        color: "#cf0e0e",
-        value: 40,
-      },
-      {
-        id: "3",
-        userId: "0",
-        title: "Фитнес",
-        type: "time",
-        color: "#00ab3c",
-        value: 120,
-      },
-      {
-        id: "4",
-        userId: "0",
-        title: "Английский",
-        type: "time",
-        color: "orange",
-        value: 0,
-      },
-      {
-        id: "5",
-        userId: "0",
-        title: "Испанский",
-        type: "time",
-        color: "yellow",
-        value: 0,
-      },
-      {
-        id: "6",
-        userId: "0",
-        title: "Тщательная чистка чайного гриба",
-        type: "quantity",
-        color: "black",
-        value: 1,
-      },
-    ],
+    activities: [],
     note: "",
   }),
   getters: {
@@ -76,6 +27,23 @@ export const useCalendarStore = defineStore("calendar", {
     setDate(date) {
       this.date = date;
     },
+    async setReportActivities(date) {
+      this.activities = [];
+      const report = this.reports.find((item) => item.date === date);
+      if (report.id) {
+        Loading.show(loaderConfig);
+        try {
+          const response = await api.get("/api/report/" + report.id);
+          this.activities = response.data;
+          this.note = report.note;
+          this.id = report.id;
+          Loading.hide();
+        } catch (error) {
+          showError("Error of receiving data", error);
+          Loading.hide();
+        }
+      }
+    },
     async getReports(payload) {
       const loaded = this.reports.some((item) => {
         const itemDate = new Date(item.date);
@@ -84,8 +52,6 @@ export const useCalendarStore = defineStore("calendar", {
           itemDate.getFullYear() == payload.year
         );
       });
-
-      console.log("loaded", loaded);
 
       if (loaded) return;
 
