@@ -78,18 +78,65 @@ export const useCalendarStore = defineStore("calendar", {
       }
     },
 
-    updateReport(report) {
-      this.id = report.id;
+    async updateReport(report) {
       this.note = report.note;
       this.activities = deepCopyFunction(report.activities);
-      console.log(report);
+      Loading.show(loaderConfig);
+
+      const payload = {
+        id: this.id,
+        note: this.note,
+        date: this.date,
+        userId: 0, //change this constant!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        activities: this.activities.map((item) => ({
+          id: uid(),
+          reportId: this.id,
+          settingsId: item.settingsId,
+          value: item.value,
+        })),
+      };
+
+      Loading.show(loaderConfig);
+
+      try {
+        const response = await api.put(
+          "/api/report/" + this.id,
+          JSON.stringify(payload)
+        );
+        if (response.data.errors) {
+          throw new Error(response.data.errors);
+        }
+        this.reports = this.reports.map((item) =>
+          item.id === this.id
+            ? { id: this.id, date: this.date, note: this.note }
+            : item
+        );
+        Loading.hide();
+      } catch (error) {
+        showError("Error of editing data", error);
+        Loading.hide();
+      }
     },
 
-    deleteReport(id) {
-      this.id = "";
-      this.note = "";
-      this.activities = [];
-      console.log(report);
+    async deleteReport() {
+      Loading.show(loaderConfig);
+
+      try {
+        const response = await api.delete("/api/report/" + this.id);
+        if (response.data.errors) {
+          throw new Error(response.data.errors);
+        }
+        this.note = "";
+        this.activities = this.activities.map((item) => ({
+          ...item,
+          value: 0,
+        }));
+        this.reports = this.reports.filter((item) => item.id !== this.id);
+        Loading.hide();
+      } catch (error) {
+        showError("Error of editing data", error);
+        Loading.hide();
+      }
     },
 
     async addReport(report) {
@@ -103,19 +150,26 @@ export const useCalendarStore = defineStore("calendar", {
         note: this.note,
         date: this.date,
         userId: 0, //change this constant!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        activities: this.activities,
+        activities: this.activities.map((item) => ({
+          id: uid(),
+          reportId: this.id,
+          settingsId: item.id,
+          value: item.value,
+        })),
       };
 
       try {
         const response = await api.post("/api/report", JSON.stringify(payload));
-        const newReports = response.data.map((report) => ({
-          ...report,
-          date: report.date.replace("-", "/"),
-        }));
-        this.reports = [...this.reports, ...newReports];
+        if (response.data.errors) {
+          throw new Error(response.data.errors);
+        }
+        this.reports = [
+          ...this.reports,
+          { id: this.id, date: this.date, note: this.note },
+        ];
         Loading.hide();
       } catch (error) {
-        showError("Error of receiving data", error);
+        showError("Error of saving data", error);
         Loading.hide();
       }
     },

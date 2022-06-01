@@ -69,8 +69,6 @@ const createFieldList = (date) => {
       activities.value = calendarStore.reportActivities;
       note.value = calendarStore.note;
       id.value = calendarStore.id;
-      console.log("then: ", activities.value, id.value);
-      console.log(date);
       calendarStore.setDate(date);
     });
   } else {

@@ -34,7 +34,11 @@
                   min="0"
                   max="1440"
                   dense
-                  style="max-width: 70px"
+                  bottom-slots
+                  error-message="One of the values must be filled"
+                  :error="!isValid"
+                  lazy-rules
+                  @blur="onBlur"
                 />
                 <div style="width: 40px">{{ unit(activity.type) }}</div>
               </div>
@@ -50,18 +54,27 @@
       </q-banner>
       <q-card-section>
         <div class="text-subtitle2">Note</div>
-        <q-input v-model="note" filled autogrow type="textarea" />
+        <q-input
+          v-model="note"
+          filled
+          autogrow
+          type="textarea"
+          bottom-slots
+          error-message="One of the values must be filled"
+          :error="!isValid"
+          lazy-rules
+        />
       </q-card-section>
       <q-card-actions align="right">
         <q-btn color="negative" type="button" @click="clearForm">Clear</q-btn>
-        <q-btn color="secondary" type="submit">Save</q-btn>
+        <q-btn color="secondary" type="submit" :disabled="!isValid">Save</q-btn>
       </q-card-actions>
     </q-form>
   </q-card>
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from "vue";
+import { ref, watch, onMounted, computed } from "vue";
 import { useCalendarStore } from "stores/calendar";
 import ActivityMark from "../ActivityMark.vue";
 
@@ -88,12 +101,26 @@ const calendarStore = useCalendarStore();
 
 let activities = ref([]);
 let note = ref("");
+let valueRules = ref([]);
+let isNewForm = ref(true);
 
 const unit = (type) => (type === "time" ? "min" : "times");
+
+let isValid = computed(
+  () =>
+    isNewForm.value ||
+    activities.value.reduce((acc, cur) => acc + cur.value, 0) > 0 ||
+    note.value !== ""
+);
+
+const onBlur = () => {
+  isNewForm.value = false;
+};
 
 watch(
   () => props.date,
   () => {
+    isNewForm.value = true;
     activities.value = props.activities;
     note.value = props.note;
   }
@@ -105,6 +132,7 @@ onMounted(() => {
 });
 
 const saveForm = () => {
+  isNewForm.value = false;
   const currentReport = {
     id: props.id,
     note: note.value,
@@ -118,7 +146,11 @@ const saveForm = () => {
 };
 
 const clearForm = () => {
-  console.log("clearForm");
+  isNewForm.value = true;
+  calendarStore.deleteReport().then(() => {
+    note.value = "";
+    activities.value = calendarStore.activities;
+  });
 };
 </script>
 

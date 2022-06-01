@@ -80,7 +80,9 @@ const saveActivity = (item) => {
 };
 
 onMounted(() => {
-  storeSettings.setActivities();
+  if (storeSettings.activities.length === 0) {
+    storeSettings.setActivities();
+  }
 });
 </script>
 
