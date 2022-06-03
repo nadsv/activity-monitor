@@ -15,12 +15,34 @@ export default {
     return {
       series: [
         {
-          name: "High - 2013",
-          data: [28, 29, 33, 36, 32, 32, 33],
+          name: "Reading",
+          data: [
+            {
+              x: "2022/05/03",
+              y: 54,
+            },
+            {
+              x: "2022/05/04",
+              y: 18,
+            },
+          ],
         },
         {
-          name: "Low - 2013",
-          data: [12, 11, 14, 18, 17, 13, 13],
+          name: "Coding",
+          data: [
+            {
+              x: "2022/05/01",
+              y: 34,
+            },
+            {
+              x: "2022/05/02",
+              y: 45,
+            },
+            {
+              x: "2022/06/02",
+              y: 45,
+            },
+          ],
         },
       ],
       chartOptions: {
@@ -61,7 +83,7 @@ export default {
           size: 1,
         },
         xaxis: {
-          categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+          type: "datetime",
           title: {
             text: "Month",
           },
@@ -70,8 +92,8 @@ export default {
           title: {
             text: "Temperature",
           },
-          min: 5,
-          max: 40,
+          min: 15,
+          max: 60,
         },
         legend: {
           position: "top",

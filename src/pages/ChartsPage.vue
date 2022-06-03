@@ -1,24 +1,13 @@
 <template>
   <q-page class="flex flex-center">
+    <DataFilters />
     <MonitoringCharts />
   </q-page>
 </template>
 
-<script>
-import { reactive, toRefs } from "vue";
+<script setup>
 import MonitoringCharts from "../components/Charts/MonitoringCharts.vue";
-
-export default {
-  setup() {
-    const state = reactive({
-      count: 0,
-    });
-    return {
-      ...toRefs(state),
-    };
-  },
-  components: { MonitoringCharts },
-};
+import DataFilters from "../components/Charts/DataFilters.vue";
 </script>
 
 <style scoped></style>

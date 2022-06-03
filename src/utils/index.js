@@ -1,4 +1,4 @@
-import { Notify } from "quasar";
+import { Notify, date } from "quasar";
 
 export const showError = (text, error) => {
   Notify.create({
@@ -9,8 +9,12 @@ export const showError = (text, error) => {
 };
 
 export const formatedToday = () => {
-  const now = new Date().toISOString().split("T")[0].split("-");
-  return `${now[0]}/${now[1]}/${now[2]}`;
+  return date.formatDate(new Date(), "YYYY/MM/DD");
+};
+
+export const calcDate = (diff) => {
+  const newDate = date.addToDate(new Date(), diff);
+  return date.formatDate(newDate, "YYYY/MM/DD");
 };
 
 export const deepCopyFunction = (inObject) => {
