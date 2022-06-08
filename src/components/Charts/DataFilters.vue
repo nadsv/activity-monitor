@@ -1,5 +1,5 @@
 <template>
-  <q-card class="card-wrapper">
+  <q-card>
     <q-form @submit="submitForm" greedy>
       <q-card-section>
         <div class="row q-mb-sm">
@@ -75,28 +75,30 @@
             </q-input>
           </div>
         </div>
-        <div class="row q-mb-sm">
-          <div class="col-3 text-subtitle2">Only<br />Active</div>
-          <div class="col-9">
-            <q-toggle v-model="active" color="positive" left-label />
-          </div>
-        </div>
       </q-card-section>
-      <q-separator spaced />
-      <div class="row q-mb-sm">
-        <ActivityList :list="list" :onlyActive="active" />
-      </div>
       <q-card-actions align="right">
-        <q-btn color="secondary" type="submit">Build Graph</q-btn>
+        <q-btn color="secondary" type="submit">Build Chart</q-btn>
       </q-card-actions>
     </q-form>
+    <q-separator spaced />
+    <q-card-section>
+      <div class="row q-mb-sm">
+        <div class="col-3 text-subtitle2">Only<br />Active</div>
+        <div class="col-9">
+          <q-toggle v-model="active" color="positive" left-label />
+        </div>
+      </div>
+    </q-card-section>
+    <div class="row q-mb-sm">
+      <ActivityList :list="list" :onlyActive="active" />
+    </div>
   </q-card>
 </template>
 
 <script setup>
 import { ref, watch } from "vue";
 import { formatedToday, calcDate } from "src/utils";
-import { useCalendarStore } from "stores/calendar";
+import { useChartStore } from "stores/charts";
 import ActivityMark from "../ActivityMark.vue";
 import ActivityList from "./ActivityList.vue";
 import { useSettingsStore } from "stores/settings";
@@ -105,9 +107,11 @@ const storeSettings = useSettingsStore();
 let list = ref(
   storeSettings.activities.map((item) => ({
     ...item,
-    show: true,
+    show: item.active,
   }))
 );
+
+const chartsStore = useChartStore();
 
 let start = ref(calcDate({ days: -7 }));
 let end = ref(formatedToday());
@@ -138,11 +142,12 @@ watch(period, () => {
 });
 
 const submitForm = () => {
+  active.value = true;
   const payload = {
     start: start.value,
     end: end.value,
   };
-  console.log("submit form:", payload);
+  chartsStore.setSeries(payload);
 };
 </script>
 

@@ -13,7 +13,12 @@
           </q-item-label>
         </q-item-section>
         <q-item-section side>
-          <q-toggle v-model="item.show" color="positive" left-label />
+          <q-toggle
+            v-model="item.show"
+            color="positive"
+            left-label
+            @update:model-value="onChange()"
+          />
         </q-item-section>
       </q-item>
     </q-list>
@@ -23,8 +28,11 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import ActivityMark from "../ActivityMark.vue";
+import { useChartStore } from "src/stores/charts";
 
 const list = ref([]);
+
+const chartStore = useChartStore();
 
 const props = defineProps({
   list: {
@@ -37,16 +45,23 @@ const props = defineProps({
   },
 });
 
-const emits = defineEmits(["changeShownGraphs"]);
-
 let filteredList = computed(() => {
-  if (!props.onlyActive) return props.list;
-  return props.list.filter((item) => item.active);
+  if (!props.onlyActive)
+    return list.value.map((item) => {
+      item.show = item.active ? item.show : false;
+      return item;
+    });
+  return list.value.filter((item) => item.active);
 });
 
 onMounted(() => {
   list.value = props.list;
 });
+
+const onChange = () => {
+  const ids = list.value.filter((item) => item.show).map((item) => item.id);
+  chartStore.initVisibleActivities(ids);
+};
 </script>
 
 <style  scoped>
