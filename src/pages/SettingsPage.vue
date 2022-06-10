@@ -49,7 +49,6 @@ import { ref, onMounted } from "vue";
 import { useSettingsStore } from "stores/settings";
 import ActivityItem from "../components/Settings/ActivityItem.vue";
 import ActivityItemForm from "../components/Modals/ActivityItemForm.vue";
-import { api } from "boot/axios";
 
 const storeSettings = useSettingsStore();
 

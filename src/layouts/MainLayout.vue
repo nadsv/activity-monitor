@@ -1,17 +1,6 @@
 <template>
   <q-layout view="hHh lpR fFf">
-    <q-header>
-      <q-toolbar>
-        <q-toolbar-title class="absolute-center">
-          <q-avatar>
-            <img src="~assets/logo.svg" />
-          </q-avatar>
-          Activity Monitor
-        </q-toolbar-title>
-
-        <div>Log in</div>
-      </q-toolbar>
-    </q-header>
+    <AppHeader />
 
     <q-drawer show-if-above :width="200" class="bg-secondary text-dark">
       <q-list>
@@ -46,6 +35,7 @@
 <script>
 import { defineComponent } from "vue";
 import EssentialLink from "components/EssentialLink.vue";
+import AppHeader from "../components/AppHeader.vue";
 
 const linksList = [
   {
@@ -70,6 +60,7 @@ export default defineComponent({
 
   components: {
     EssentialLink,
+    AppHeader,
   },
 
   setup() {
