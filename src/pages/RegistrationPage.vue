@@ -20,7 +20,7 @@
             <div class="row q-mb-sm">
               <q-input
                 outlined
-                v-model="login"
+                v-model="email"
                 label="Login (e-mail)"
                 class="form__field"
                 :rules="[
@@ -37,10 +37,11 @@
                 label="Password"
                 class="form__field"
                 type="password"
-                :rules="[(val) => isValidConfirmation(val)]"
+                :rules="[(val) => isValidPassword(val)]"
                 lazy-rules
               />
             </div>
+
             <div class="row">
               <q-input
                 outlined
@@ -48,9 +49,14 @@
                 label="Confirm Password"
                 class="form__field"
                 type="password"
-                :rules="[(val) => isValidPassword(val)]"
+                :rules="[(val) => isValidConfirmation(val)]"
                 lazy-rules
               />
+            </div>
+            <div class="row password-info text-info">
+              Password must contain at least one lowcase letter, one uppercase
+              letter, one number and be longer than 8 charachers and less than
+              32 characters
             </div>
           </q-card-section>
           <q-card-actions align="right">
@@ -65,25 +71,26 @@
 <script setup>
 import { ref } from "vue";
 import { isValidEmail, isValidPassword } from "../utils/index";
-import { useSettingsStore } from "stores/settings";
+import { useAuthStore } from "stores/auth";
 
-const storeSettings = useSettingsStore();
+const authStore = useAuthStore();
 const name = ref("");
-const login = ref("");
+const email = ref("");
 const confirm = ref("");
 const password = ref("");
 
 const isValidConfirmation = (value) => {
-  return value === login.value || "Passwords don't match";
+  return value === password.value || "Passwords don't match";
 };
 
 const submitForm = () => {
+  authStore.logout();
   const form = {
     name: name.value,
-    login: login.value,
+    email: email.value,
     password: password.value,
   };
-  console.log(form);
+  authStore.register(form);
 };
 </script>
 
@@ -94,5 +101,13 @@ const submitForm = () => {
 
 .form__field {
   width: 100%;
+}
+
+.password-info {
+  font-size: 10px;
+  max-width: 280px;
+  border-left: 4px solid #09abb8;
+  padding-left: 15px;
+  margin-bottom: 10px;
 }
 </style>

@@ -7,7 +7,7 @@
             <div class="row q-mb-sm">
               <q-input
                 outlined
-                v-model="login"
+                v-model="email"
                 label="Login (e-mail)"
                 class="form__field"
                 :rules="[
@@ -48,18 +48,19 @@
 <script setup>
 import { ref } from "vue";
 import { isValidEmail, isValidPassword } from "../utils/index";
-import { useSettingsStore } from "stores/settings";
+import { useAuthStore } from "stores/auth";
 
-const storeSettings = useSettingsStore();
-const login = ref("");
+const authStore = useAuthStore();
+const email = ref("");
 const password = ref("");
 
 const submitForm = () => {
+  authStore.logout();
   const form = {
-    login: login.value,
+    email: email.value,
     password: password.value,
   };
-  console.log(form);
+  authStore.login(form);
 };
 </script>
 
