@@ -35,7 +35,7 @@ export default route(function (/* { store, ssrContext } */) {
     ),
   });
 
-  Router.beforeEach((to, from, next) => {
+  Router.beforeEach((to, _, next) => {
     const notExpired =
       +localStorage.getItem("expiredTime") - new Date().getTime() > 0;
     const auth = !!localStorage.getItem("token");
@@ -51,8 +51,6 @@ export default route(function (/* { store, ssrContext } */) {
         next("/login");
       }
     }
-    console.log(notExpired, auth);
-    next();
   });
 
   return Router;

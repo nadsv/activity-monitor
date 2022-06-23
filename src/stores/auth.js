@@ -2,6 +2,8 @@ import { defineStore } from "pinia";
 import { uid, Loading, QSpinnerHourglass, date } from "quasar";
 import { api } from "boot/axios";
 import { showError } from "../utils";
+import { useSettingsStore } from "./settings";
+import { useCalendarStore } from "./calendar";
 
 const loaderConfig = {
   spinner: QSpinnerHourglass,
@@ -63,6 +65,18 @@ export const useAuthStore = defineStore("auth", {
           new Date().getTime() + 30 * 60 * 1000
         );
         Loading.hide();
+        const settingsStore = useSettingsStore();
+        await settingsStore.setActivities(this.user.id);
+
+        const calendarStore = useCalendarStore();
+        await calendarStore.getReports({
+          month: new Date().getMonth() + 1,
+          year: new Date().getFullYear(),
+          userId: this.user.id,
+        });
+
+        await calendarStore.setReportActivities(calendarStore.date);
+
         this.router.push("/calendar");
       } catch (error) {
         showError("Error of authorization", error);
@@ -70,11 +84,76 @@ export const useAuthStore = defineStore("auth", {
       }
     },
 
-    logout() {
+    async logout() {
+      Loading.show(loaderConfig);
+      try {
+        const response = await api.delete("/api/logout/" + this.user.id);
+        if (response.data.errors) {
+          throw new Error(response.data.errors);
+        }
+        this.resetUser();
+        Loading.hide();
+      } catch (error) {
+        console.log(error);
+        showError("Error of logging out", error);
+        Loading.hide();
+      }
+    },
+
+    async setUser() {
+      if (
+        !!localStorage.getItem("userId") &&
+        !!localStorage.getItem("token") &&
+        !!localStorage.getItem("expiredTime")
+      ) {
+        const notExpired =
+          +localStorage.getItem("expiredTime") - new Date().getTime() > 0;
+        if (notExpired) {
+          Loading.show(loaderConfig);
+
+          try {
+            api.defaults.headers.common["Authorization"] =
+              localStorage.getItem("token");
+            const response = await api.get("/api/user/");
+            if (response.data.errors) {
+              throw new Error(response.data.errors);
+            }
+            this.authanticated = true;
+            this.user = {
+              id: response.data.id,
+              name: response.data.name,
+              email: response.data.email,
+            };
+            this.token = localStorage.getItem("token");
+            const settingsStore = useSettingsStore();
+            await settingsStore.setActivities(this.user.id);
+
+            const calendarStore = useCalendarStore();
+            await calendarStore.getReports({
+              month: new Date().getMonth() + 1,
+              year: new Date().getFullYear(),
+              userId: this.user.id,
+            });
+
+            await calendarStore.setReportActivities(calendarStore.date);
+            Loading.hide();
+          } catch (error) {
+            this.resetUser();
+            showError("Error of registration", error);
+            Loading.hide();
+          }
+          return;
+        }
+        this.resetUser();
+      }
+    },
+
+    resetUser() {
       this.user = {};
       this.authanticated = false;
       api.defaults.headers.common["Authorization"] = "";
       localStorage.clear();
+      this.router.push("/login");
     },
   },
 });
