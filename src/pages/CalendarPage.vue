@@ -22,7 +22,6 @@
       <DayForm
         :activities="activities"
         :note="note"
-        :id="id"
         :date="calendarStore.date"
       />
     </div>
@@ -30,15 +29,17 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, onBeforeMount } from "vue";
+import { ref, onMounted, watch } from "vue";
 import DayForm from "../components/Calendar/DayForm.vue";
 import { useCalendarStore } from "stores/calendar";
 import { useSettingsStore } from "stores/settings";
+import { useAuthStore } from "../stores/auth";
 import { debounce } from "quasar";
 
 const calendarStore = useCalendarStore();
 const settingsStore = useSettingsStore();
-const date = ref(calendarStore.date);
+const authStore = useAuthStore();
+const date = ref("");
 let note = ref("");
 let activities = ref([]);
 let id = ref("");
@@ -64,33 +65,38 @@ const pattern = () => {
 
 const createFieldList = (date) => {
   const index = calendarStore.datesInMonth.indexOf(date);
+  if (date === calendarStore.date) {
+    activities.value = calendarStore.reportActivities;
+    note.value = calendarStore.note;
+    id.value = calendarStore.id;
+    return;
+  }
   if (index > -1) {
     calendarStore.setReportActivities(date).then(() => {
       activities.value = calendarStore.reportActivities;
       note.value = calendarStore.note;
-      id.value = calendarStore.id;
       calendarStore.setDate(date);
     });
   } else {
     activities.value = pattern();
     note.value = "";
-    id.value = "0";
     calendarStore.setDate(date);
+    calendarStore.setReportId("0");
   }
 };
 
-onBeforeMount(() => {
-  createFieldList(date.value);
-});
-
 onMounted(() => {
-  calendarStore.getReports({ year: YEAR, month: MONTH });
+  date.value = calendarStore.date;
+  if (settingsStore.activities.length === 0) {
+    settingsStore.setActivities(localStorage.getItem("userId"));
+  }
 });
 
 const changeMonthYear = debounce(function (cur) {
   calendarStore.getReports({
     year: cur.getFullYear(),
     month: cur.getMonth() + 1,
+    userId: authStore.user.id,
   });
 }, 1000);
 

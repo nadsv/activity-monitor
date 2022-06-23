@@ -13,10 +13,14 @@ export const useSettingsStore = defineStore("settings", {
   }),
   getters: {},
   actions: {
-    async setActivities() {
+    async setActivities(userId) {
       Loading.show(loaderConfig);
       try {
-        const response = await api.get("/api/settings");
+        const response = await api.get("/api/settings", {
+          params: {
+            userId,
+          },
+        });
         this.activities = response.data.map((item) => ({
           ...item,
           active: item.active === 1 ? true : false,

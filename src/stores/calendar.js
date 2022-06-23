@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { uid, Loading, QSpinnerHourglass } from "quasar";
 import { api } from "boot/axios";
 import { showError, formatedToday, deepCopyFunction } from "../utils";
+import { useSettingsStore } from "./settings";
 
 const loaderConfig = {
   spinner: QSpinnerHourglass,
@@ -10,7 +11,7 @@ const loaderConfig = {
 export const useCalendarStore = defineStore("calendar", {
   state: () => ({
     reports: [],
-    id: "uniqueId",
+    id: "0",
     date: formatedToday(),
     activities: [],
     note: "",
@@ -28,10 +29,14 @@ export const useCalendarStore = defineStore("calendar", {
       this.date = date;
     },
 
+    setReportId(id) {
+      this.id = id;
+    },
+
     async setReportActivities(date) {
       this.activities = [];
       const report = this.reports.find((item) => item.date === date);
-      if (report.id) {
+      if (!!report) {
         Loading.show(loaderConfig);
         try {
           const response = await api.get("/api/report/" + report.id);
@@ -43,6 +48,16 @@ export const useCalendarStore = defineStore("calendar", {
           showError("Error of receiving data", error);
           Loading.hide();
         }
+      } else {
+        const settingsStore = useSettingsStore();
+        for (const activity of settingsStore.activities) {
+          if (activity.active) {
+            this.activities.push({ ...activity, value: 0 });
+          }
+        }
+        this.note = "";
+        this.id = 0;
+        Loading.hide();
       }
     },
 
@@ -64,6 +79,7 @@ export const useCalendarStore = defineStore("calendar", {
           params: {
             year: payload.year,
             month: payload.month,
+            userId: payload.userId,
           },
         });
         const newReports = response.data.map((report) => ({
@@ -87,7 +103,7 @@ export const useCalendarStore = defineStore("calendar", {
         id: this.id,
         note: this.note,
         date: this.date,
-        userId: 0, //change this constant!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        userId: report.userId,
         activities: this.activities.map((item) => ({
           id: uid(),
           reportId: this.id,
@@ -149,7 +165,7 @@ export const useCalendarStore = defineStore("calendar", {
         id: this.id,
         note: this.note,
         date: this.date,
-        userId: 0, //change this constant!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        userId: report.userId,
         activities: this.activities.map((item) => ({
           id: uid(),
           reportId: this.id,

@@ -1,6 +1,6 @@
 <template>
   <q-card class="card">
-    <q-form @submit="saveForm" greedy>
+    <q-form @submit="saveForm" greedy v-if="activities.length > 0">
       <q-card-section>
         <div
           class="
@@ -10,7 +10,7 @@
           Report
         </div>
       </q-card-section>
-      <table v-if="activities.length > 0">
+      <table>
         <thead>
           <tr class="text-primary">
             <th scope="col">Mark</th>
@@ -46,12 +46,7 @@
           </tr>
         </tbody>
       </table>
-      <q-banner v-else class="bg-info text-white">
-        Add daily activities in Settings.
-        <template v-slot:action>
-          <q-btn flat color="white" label="Settings" :to="'/settings'" />
-        </template>
-      </q-banner>
+
       <q-card-section>
         <div class="text-subtitle2">Note</div>
         <q-input
@@ -70,19 +65,22 @@
         <q-btn color="secondary" type="submit" :disabled="!isValid">Save</q-btn>
       </q-card-actions>
     </q-form>
+    <q-banner v-else class="bg-info text-white">
+      Add daily activities in Settings.
+      <template v-slot:action>
+        <q-btn flat color="white" label="Settings" :to="'/settings'" />
+      </template>
+    </q-banner>
   </q-card>
 </template>
 
 <script setup>
-import { ref, watch, onMounted, computed } from "vue";
+import { ref, watch, computed, onMounted } from "vue";
 import { useCalendarStore } from "stores/calendar";
+import { useAuthStore } from "src/stores/auth";
 import ActivityMark from "../ActivityMark.vue";
 
 const props = defineProps({
-  id: {
-    type: String,
-    required: true,
-  },
   note: {
     type: String,
     required: true,
@@ -99,9 +97,7 @@ const props = defineProps({
 
 const calendarStore = useCalendarStore();
 
-let activities = ref([]);
 let note = ref("");
-let valueRules = ref([]);
 let isNewForm = ref(true);
 
 const unit = (type) => (type === "time" ? "min" : "times");
@@ -109,7 +105,7 @@ const unit = (type) => (type === "time" ? "min" : "times");
 let isValid = computed(
   () =>
     isNewForm.value ||
-    activities.value.reduce((acc, cur) => acc + cur.value, 0) > 0 ||
+    props.activities.reduce((acc, cur) => acc + cur.value, 0) > 0 ||
     note.value !== ""
 );
 
@@ -121,24 +117,24 @@ watch(
   () => props.date,
   () => {
     isNewForm.value = true;
-    activities.value = props.activities;
     note.value = props.note;
   }
 );
 
 onMounted(() => {
-  activities.value = props.activities;
-  note.value = props.note;
+  note.value = calendarStore.note;
 });
 
 const saveForm = () => {
   isNewForm.value = false;
+  const authStore = useAuthStore();
   const currentReport = {
-    id: props.id,
+    id: calendarStore.id,
     note: note.value,
-    activities: activities.value,
+    activities: props.activities,
+    userId: authStore.user.id,
   };
-  if (props.id === "0") {
+  if (calendarStore.id === "0") {
     calendarStore.addReport(currentReport);
   } else {
     calendarStore.updateReport(currentReport);

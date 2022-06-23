@@ -55,7 +55,6 @@ const email = ref("");
 const password = ref("");
 
 const submitForm = () => {
-  authStore.logout();
   const form = {
     email: email.value,
     password: password.value,

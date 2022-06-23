@@ -57,11 +57,14 @@
 <script setup>
 import { reactive, onMounted } from "vue";
 import { useSettingsStore } from "stores/settings";
+import { useAuthStore } from "stores/auth";
 
 const typeOptions = ["time", "quantity"];
 
+const authStore = useAuthStore();
+
 const defaultItem = {
-  userId: "0",
+  userId: authStore.user.id,
   title: "",
   active: true,
   type: "time",
