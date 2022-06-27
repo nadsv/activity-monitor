@@ -13,8 +13,6 @@ const settingsStore = useSettingsStore();
 export const useChartStore = defineStore("charts", {
   state: () => ({
     allSeries: [],
-    series: [],
-    show: [],
     chartOptions: {
       chart: {
         height: 450,
@@ -64,28 +62,14 @@ export const useChartStore = defineStore("charts", {
         },
       },
       legend: {
-        position: "top",
-        horizontalAlign: "right",
-        floating: true,
-        offsetY: -15,
-        offsetX: -5,
+        show: false,
       },
     },
   }),
-  getters: {
-    charts(state) {
-      return deepCopyFunction(state.activities);
-    },
-  },
+  getters: {},
   actions: {
-    initVisibleActivities(ids) {
-      this.series = this.allSeries.filter((item) => ids.includes(item.id));
-      this.chartOptions.colors = this.series.map((item) => item.color);
-    },
-
     async setSeries(payload) {
       this.allSeries = [];
-      this.series = [];
       Loading.show(loaderConfig);
       try {
         const response = await api.get("/api/chart/", {
@@ -100,6 +84,8 @@ export const useChartStore = defineStore("charts", {
           item["id"] = chart.id;
           item["name"] = chart.title;
           item["color"] = chart.color;
+          item["unit"] = chart.type;
+          item["show"] = true;
           let data = [];
           for (let value in chart.values) {
             data.push({ x: value, y: chart.values[value] });
@@ -108,10 +94,6 @@ export const useChartStore = defineStore("charts", {
           allSeries.push(item);
         }
         this.allSeries = allSeries;
-        const ids = settingsStore.activities
-          .filter((item) => item.active)
-          .map((item) => item.id);
-        this.initVisibleActivities(ids);
         Loading.hide();
       } catch (error) {
         showError("Error of receiving data", error);

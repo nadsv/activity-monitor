@@ -8,3 +8,7 @@ a {
 .text-underline {
   text-decoration: underline;
 }
+
+.q-checkbox__inner.relative-position.non-selectable.q-checkbox__inner--truthy {
+  color: currentColor !important;
+}

@@ -51,7 +51,7 @@
 import { ref, onMounted } from "vue";
 import { useSettingsStore } from "stores/settings";
 import ActivityItem from "../components/Settings/ActivityItem.vue";
-import ActivityItemForm from "../components/Modals/ActivityItemForm.vue";
+import ActivityItemForm from "../components/Settings/ActivityItemForm.vue";
 import LogoutBanner from "../components/Settings/LogoutBanner.vue";
 import { useAuthStore } from "../stores/auth";
 
