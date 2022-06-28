@@ -2,13 +2,11 @@ import { defineStore } from "pinia";
 import { Loading, QSpinnerHourglass } from "quasar";
 import { api } from "boot/axios";
 import { showError, formatedToday, calcDate } from "../utils";
-import { useSettingsStore } from "./settings";
+import { useAuthStore } from "./auth";
 
 const loaderConfig = {
   spinner: QSpinnerHourglass,
 };
-
-const settingsStore = useSettingsStore();
 
 export const useChartStore = defineStore("charts", {
   state: () => ({
@@ -34,13 +32,15 @@ export const useChartStore = defineStore("charts", {
         toolbar: {
           show: false,
         },
+        animations: {
+          enabled: false,
+        },
+        dynamicAnimation: {
+          enabled: false,
+        },
       },
-      colors: ["#F2C037", "#545454"],
       dataLabels: {
         enabled: true,
-      },
-      stroke: {
-        curve: "smooth",
       },
       title: {
         text: "Activity Chart",
@@ -98,14 +98,19 @@ export const useChartStore = defineStore("charts", {
       }
       this.period.start = calcDate(diff);
     },
+    resetSeries() {
+      this.allSeries = [];
+    },
     async setSeries(payload) {
       this.allSeries = [];
       Loading.show(loaderConfig);
       try {
+        const authStore = useAuthStore();
         const response = await api.get("/api/chart/", {
           params: {
             start: payload.start,
             end: payload.end,
+            userId: authStore.user.id,
           },
         });
         let allSeries = [];

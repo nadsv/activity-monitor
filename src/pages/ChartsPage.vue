@@ -3,7 +3,10 @@
     <div class="row q-mb-md row--justify-content">
       <DataFilters class="filter" />
     </div>
-    <div class="charts row q-mb-md row--justify-content">
+    <div
+      class="charts row q-mb-md row--justify-content"
+      v-if="chartStore.allSeries.length"
+    >
       <MonitoringCharts class="monitoring-charts" :typeOfUnites="'time'" />
       <MonitoringCharts class="monitoring-charts" :typeOfUnites="'quantity'" />
     </div>
@@ -15,6 +18,8 @@ import MonitoringCharts from "../components/Charts/MonitoringCharts.vue";
 import DataFilters from "../components/Charts/DataFilters.vue";
 import ShowFilters from "../components/Charts/ShowFilters.vue";
 import { useChartStore } from "src/stores/charts";
+
+const chartStore = useChartStore();
 </script>
 
 <style scoped>
