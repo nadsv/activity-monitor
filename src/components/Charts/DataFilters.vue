@@ -20,7 +20,7 @@
           <div class="col-9">
             <q-input
               outlined
-              v-model="start"
+              v-model="chartsStore.period.start"
               mask="date"
               :rules="['date']"
               dense
@@ -32,7 +32,7 @@
                     transition-show="scale"
                     transition-hide="scale"
                   >
-                    <q-date v-model="start">
+                    <q-date v-model="chartsStore.period.start">
                       <div class="row items-center justify-end">
                         <q-btn
                           v-close-popup
@@ -51,7 +51,13 @@
         <div class="row q-mb-sm">
           <div class="col-3 q-pt-sm text-subtitle2">To</div>
           <div class="col-9">
-            <q-input outlined v-model="end" mask="date" :rules="['date']" dense>
+            <q-input
+              outlined
+              v-model="chartsStore.period.end"
+              mask="date"
+              :rules="['date']"
+              dense
+            >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy
@@ -59,7 +65,7 @@
                     transition-show="scale"
                     transition-hide="scale"
                   >
-                    <q-date v-model="end">
+                    <q-date v-model="chartsStore.period.end">
                       <div class="row items-center justify-end">
                         <q-btn
                           v-close-popup
@@ -93,7 +99,7 @@ const chartsStore = useChartStore();
 let start = ref(calcDate({ days: -7 }));
 let end = ref(formatedToday());
 let period = ref("week");
-let periods = ref(["week", "month", "year", "2 years", "period"]);
+let periods = chartsStore.periods;
 
 watch(period, () => {
   let diff = {};
@@ -115,6 +121,7 @@ watch(period, () => {
       break;
   }
   start.value = calcDate(diff);
+  chartsStore.setEndDates(period.value);
 });
 
 const submitForm = () => {

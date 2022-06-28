@@ -1,18 +1,22 @@
 <template>
-  <q-card class="card-wrapper"
-    ><apexchart
-      type="line"
-      height="450"
-      :options="chartOptions"
-      :series="series"
-    ></apexchart
-  ></q-card>
+  <div class="col">
+    <q-card class="card-wrapper"
+      ><apexchart
+        type="line"
+        height="450"
+        :options="chartOptions"
+        :series="series"
+      ></apexchart
+    ></q-card>
+    <chart-legend :series="legendItems" />
+  </div>
 </template>
 
 <script setup>
 import { computed } from "vue";
 import { useChartStore } from "src/stores/charts";
 import { deepCopyFunction } from "src/utils";
+import ChartLegend from "./ChartLegend.vue";
 
 const props = defineProps({
   typeOfUnites: { type: String, required: true },
@@ -35,6 +39,10 @@ let series = computed(() =>
   chartStore.allSeries.filter(
     (item) => item.show && item.unit === props.typeOfUnites
   )
+);
+
+let legendItems = computed(() =>
+  chartStore.allSeries.filter((item) => item.unit === props.typeOfUnites)
 );
 </script>
 

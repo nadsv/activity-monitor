@@ -2,9 +2,8 @@
   <q-page class="q-pa-md">
     <div class="row q-mb-md row--justify-content">
       <DataFilters class="filter" />
-      <ShowFilters class="filter" />
     </div>
-    <div class="row q-mb-md row--justify-content">
+    <div class="charts row q-mb-md row--justify-content">
       <MonitoringCharts class="monitoring-charts" :typeOfUnites="'time'" />
       <MonitoringCharts class="monitoring-charts" :typeOfUnites="'quantity'" />
     </div>
@@ -15,6 +14,7 @@
 import MonitoringCharts from "../components/Charts/MonitoringCharts.vue";
 import DataFilters from "../components/Charts/DataFilters.vue";
 import ShowFilters from "../components/Charts/ShowFilters.vue";
+import { useChartStore } from "src/stores/charts";
 </script>
 
 <style scoped>
@@ -23,6 +23,7 @@ import ShowFilters from "../components/Charts/ShowFilters.vue";
 }
 
 .row--justify-content {
+  flex-wrap: wrap;
   justify-content: center;
 }
 .monitoring-charts {
@@ -34,6 +35,10 @@ import ShowFilters from "../components/Charts/ShowFilters.vue";
   .monitoring-charts {
     min-width: 0;
     margin-right: 0;
+  }
+
+  .charts {
+    flex-direction: column;
   }
 }
 </style>

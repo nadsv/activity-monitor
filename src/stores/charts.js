@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
-import { date, Loading, QSpinnerHourglass } from "quasar";
+import { Loading, QSpinnerHourglass } from "quasar";
 import { api } from "boot/axios";
-import { showError, formatedToday, deepCopyFunction } from "../utils";
+import { showError, formatedToday, calcDate } from "../utils";
 import { useSettingsStore } from "./settings";
 
 const loaderConfig = {
@@ -13,6 +13,12 @@ const settingsStore = useSettingsStore();
 export const useChartStore = defineStore("charts", {
   state: () => ({
     allSeries: [],
+    period: {
+      type: "week",
+      start: calcDate({ days: -7 }),
+      end: formatedToday(),
+    },
+    periods: ["week", "month", "year", "2 years", "period"],
     chartOptions: {
       chart: {
         height: 450,
@@ -68,6 +74,30 @@ export const useChartStore = defineStore("charts", {
   }),
   getters: {},
   actions: {
+    setPeriod(period) {
+      this.period = period;
+    },
+    setEndDates(typeOfPeriod) {
+      let diff = {};
+      switch (typeOfPeriod) {
+        case "week":
+          diff = { days: -7 };
+          break;
+        case "month":
+          diff = { month: -1 };
+          break;
+        case "year":
+          diff = { year: -1 };
+          break;
+        case "2 years":
+          diff = { year: -2 };
+          break;
+        default:
+          diff = { days: 0 };
+          break;
+      }
+      this.period.start = calcDate(diff);
+    },
     async setSeries(payload) {
       this.allSeries = [];
       Loading.show(loaderConfig);
