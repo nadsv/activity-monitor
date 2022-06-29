@@ -1,6 +1,10 @@
 <template>
   <q-card class="card">
-    <q-form @submit="saveForm" greedy v-if="activities.length > 0">
+    <q-form
+      @submit="saveForm"
+      greedy
+      v-if="calendarStore.reportActivities.length"
+    >
       <q-card-section>
         <div
           class="
@@ -65,7 +69,10 @@
         <q-btn color="secondary" type="submit" :disabled="!isValid">Save</q-btn>
       </q-card-actions>
     </q-form>
-    <q-banner v-else class="bg-info text-white">
+    <q-banner
+      class="bg-info text-white"
+      v-if="settingsStore.activities.length === 0"
+    >
       Add daily activities in Settings.
       <template v-slot:action>
         <q-btn flat color="white" label="Settings" :to="'/settings'" />
@@ -77,6 +84,7 @@
 <script setup>
 import { ref, watch, computed, onMounted } from "vue";
 import { useCalendarStore } from "stores/calendar";
+import { useSettingsStore } from "src/stores/settings";
 import { useAuthStore } from "src/stores/auth";
 import ActivityMark from "../ActivityMark.vue";
 
@@ -96,7 +104,7 @@ const props = defineProps({
 });
 
 const calendarStore = useCalendarStore();
-
+const settingsStore = useSettingsStore();
 let note = ref("");
 let isNewForm = ref(true);
 

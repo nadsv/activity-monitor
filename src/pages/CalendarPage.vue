@@ -29,7 +29,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, toRef, onMounted, watch } from "vue";
 import DayForm from "../components/Calendar/DayForm.vue";
 import { useCalendarStore } from "stores/calendar";
 import { useSettingsStore } from "stores/settings";
@@ -65,6 +65,7 @@ const pattern = () => {
 
 const createFieldList = (date) => {
   const index = calendarStore.datesInMonth.indexOf(date);
+
   if (date === calendarStore.date) {
     activities.value = calendarStore.reportActivities;
     note.value = calendarStore.note;
@@ -87,9 +88,6 @@ const createFieldList = (date) => {
 
 onMounted(() => {
   date.value = calendarStore.date;
-  if (settingsStore.activities.length === 0) {
-    settingsStore.setActivities(localStorage.getItem("userId"));
-  }
 });
 
 const changeMonthYear = debounce(function (cur) {
@@ -99,6 +97,27 @@ const changeMonthYear = debounce(function (cur) {
     userId: authStore.user.id,
   });
 }, 1000);
+
+watch(
+  () => settingsStore.activities.length,
+  () => {
+    if (settingsStore.activities.length > 0 && activities.value.length === 0) {
+      createFieldList(date.value);
+    }
+  }
+);
+
+watch(
+  () => calendarStore.reportActivities.length,
+  () => {
+    if (
+      calendarStore.reportActivities.length > 0 &&
+      activities.value.length === 0
+    ) {
+      createFieldList(date.value);
+    }
+  }
+);
 
 watch(date, (curDate, prevDate) => {
   const cur = new Date(curDate);
