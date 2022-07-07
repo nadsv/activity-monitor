@@ -81,9 +81,15 @@
             </q-input>
           </div>
         </div>
+        <div class="row q-mb-sm">
+          <div class="q-gutter-sm">
+            <q-radio val="charts" label="Charts" v-model="typeOfData" />
+            <q-radio val="notes" label="Notes" v-model="typeOfData" />
+          </div>
+        </div>
       </q-card-section>
       <q-card-actions align="right">
-        <q-btn color="secondary" type="submit">Build Chart</q-btn>
+        <q-btn color="secondary" type="submit">Get Data</q-btn>
       </q-card-actions>
     </q-form>
   </q-card>
@@ -93,13 +99,16 @@
 import { ref, watch } from "vue";
 import { formatedToday, calcDate } from "src/utils";
 import { useChartStore } from "stores/charts";
+import { useNotesStore } from "stores/notes";
 
 const chartsStore = useChartStore();
+const notesStore = useNotesStore();
 
 let start = ref(calcDate({ days: -7 }));
 let end = ref(formatedToday());
 let period = ref("week");
 let periods = chartsStore.periods;
+let typeOfData = ref("charts");
 
 watch(period, () => {
   let diff = {};
@@ -129,19 +138,22 @@ const submitForm = () => {
     start: start.value,
     end: end.value,
   };
-  chartsStore.setSeries(payload);
+  chartsStore.resetSeries();
+  notesStore.resetNotes();
+  switch (typeOfData.value) {
+    case "charts":
+      chartsStore.setSeries(payload);
+      break;
+    case "notes":
+      notesStore.getNotes(payload);
+      break;
+  }
 };
 </script>
 
 <style scoped>
 .data-filters-wrapper {
-  margin-right: 50px;
   margin-bottom: 20px;
   max-width: 350px;
-}
-@media screen and (max-width: 600px) {
-  .data-filters-wrapper {
-    margin-right: 0;
-  }
 }
 </style>

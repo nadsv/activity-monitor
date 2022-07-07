@@ -4,6 +4,8 @@ import { api } from "boot/axios";
 import { showError } from "../utils";
 import { useSettingsStore } from "./settings";
 import { useCalendarStore } from "./calendar";
+import { useNotesStore } from "./notes";
+import { useChartStore } from "./charts";
 
 const loaderConfig = {
   spinner: QSpinnerHourglass,
@@ -76,6 +78,12 @@ export const useAuthStore = defineStore("auth", {
         });
 
         await calendarStore.setReportActivities(calendarStore.date);
+
+        const notesStore = useNotesStore();
+        notesStore.resetNotes();
+
+        const chartsStore = useChartStore();
+        chartsStore.resetSeries();
 
         this.router.push("/calendar");
       } catch (error) {

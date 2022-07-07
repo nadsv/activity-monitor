@@ -44,7 +44,7 @@ const linksList = [
     to: "calendar",
   },
   {
-    title: "Charts",
+    title: "Charts&Notes",
     icon: "insights",
     to: "charts",
   },

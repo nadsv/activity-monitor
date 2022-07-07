@@ -10,16 +10,26 @@
       <MonitoringCharts class="monitoring-charts" :typeOfUnites="'time'" />
       <MonitoringCharts class="monitoring-charts" :typeOfUnites="'quantity'" />
     </div>
+    <div
+      class="charts row q-mb-md row--justify-content"
+      v-if="notesStore.notes.length"
+    >
+      <daily-notes></daily-notes>
+    </div>
   </q-page>
 </template>
 
 <script setup>
+import { ref } from "vue";
+import DailyNotes from "src/components/Charts/DailyNotes.vue";
 import MonitoringCharts from "../components/Charts/MonitoringCharts.vue";
 import DataFilters from "../components/Charts/DataFilters.vue";
 import ShowFilters from "../components/Charts/ShowFilters.vue";
 import { useChartStore } from "src/stores/charts";
+import { useNotesStore } from "src/stores/notes";
 
 const chartStore = useChartStore();
+const notesStore = useNotesStore();
 </script>
 
 <style scoped>
