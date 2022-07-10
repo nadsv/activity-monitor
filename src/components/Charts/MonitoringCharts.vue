@@ -1,47 +1,49 @@
 <template>
-  <div>
-    <apexchart
-      height="300"
-      type="area"
-      :options="options"
-      :series="series"
-    ></apexchart>
-    <apexchart
-      height="300"
-      type="area"
-      :options="options"
-      :series="series"
-    ></apexchart>
-    <apexchart
-      height="300"
-      type="area"
-      :options="options"
-      :series="series"
-    ></apexchart>
+  <div class="col">
+    <q-card class="card-wrapper"
+      ><apexchart
+        type="line"
+        height="450"
+        :options="chartOptions"
+        :series="series"
+      ></apexchart
+    ></q-card>
+    <chart-legend :series="legendItems" />
   </div>
 </template>
 
-<script>
-export default {
-  data: function () {
-    return {
-      options: {
-        chart: {
-          id: "vuechart-example",
-        },
-        xaxis: {
-          categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998],
-        },
-      },
-      series: [
-        {
-          name: "series-1",
-          data: [30, 40, 45, 50, 49, 60, 70, 91],
-        },
-      ],
-    };
-  },
-};
+<script setup>
+import { computed } from "vue";
+import { useChartStore } from "src/stores/charts";
+import { deepCopyFunction } from "src/utils";
+import ChartLegend from "./ChartLegend.vue";
+
+const props = defineProps({
+  typeOfUnites: { type: String, required: true },
+});
+
+const chartStore = useChartStore();
+
+let chartOptions = computed(() => {
+  let options = deepCopyFunction(chartStore.chartOptions);
+  if (props.typeOfUnites === "time") {
+    options.title.text = "Time in Minutes";
+  }
+  if (props.typeOfUnites === "quantity") {
+    options.title.text = "Number of Times";
+    options.yaxis.title.text = "Times";
+  }
+  return options;
+});
+let series = computed(() =>
+  chartStore.allSeries.filter(
+    (item) => item.show && item.unit === props.typeOfUnites
+  )
+);
+
+let legendItems = computed(() =>
+  chartStore.allSeries.filter((item) => item.unit === props.typeOfUnites)
+);
 </script>
 
 <style lang="scss" scoped>

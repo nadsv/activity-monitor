@@ -1,5 +1,5 @@
 <template>
-  <q-item tag="label">
+  <q-item>
     <q-item-section avatar>
       <ActivityMark :color="color" />
     </q-item-section>
@@ -21,7 +21,7 @@
           dense
           round
           icon="delete"
-          @click="promtToDelete"
+          @click.stop="promtToDelete"
         />
         <q-btn
           size="16px"
@@ -30,7 +30,7 @@
           dense
           round
           icon="edit"
-          @click="editButtonClick"
+          @click.stop="editButtonClick"
         />
       </div>
     </q-item-section>
@@ -64,16 +64,11 @@ const promtToDelete = () => {
   $q.dialog({
     title: "Confirm",
     message:
-      "Do you really want to delete this item? All records about your daily activities will be deleted from the calendar",
+      "Do you really want to delete this item? All records with this daily activity will be deleted from the calendar",
     cancel: true,
     persistent: true,
   }).onOk(() => {
     storeSettings.deleteActivityItem(props.id);
-    $q.notify({
-      message: "The activity was deleted.",
-      color: "info",
-      timeout: 700,
-    });
   });
 };
 </script>

@@ -1,6 +1,10 @@
 <template>
   <q-card class="card">
-    <q-form @submit="submitForm" greedy>
+    <q-form
+      @submit="saveForm"
+      greedy
+      v-if="calendarStore.reportActivities.length"
+    >
       <q-card-section>
         <div
           class="
@@ -34,7 +38,11 @@
                   min="0"
                   max="1440"
                   dense
-                  style="max-width: 70px"
+                  bottom-slots
+                  error-message="One of the values must be filled"
+                  :error="!isValid"
+                  lazy-rules
+                  @blur="onBlur"
                 />
                 <div style="width: 40px">{{ unit(activity.type) }}</div>
               </div>
@@ -42,28 +50,45 @@
           </tr>
         </tbody>
       </table>
+
       <q-card-section>
         <div class="text-subtitle2">Note</div>
-        <q-input v-model="note" filled autogrow type="textarea" />
+        <q-input
+          v-model="note"
+          filled
+          autogrow
+          type="textarea"
+          bottom-slots
+          error-message="One of the values must be filled"
+          :error="!isValid"
+          lazy-rules
+        />
       </q-card-section>
-
-      <q-card-actions vertical align="right">
-        <q-btn color="secondary" type="submit">Save</q-btn>
+      <q-card-actions align="right">
+        <q-btn color="negative" type="button" @click="clearForm">Clear</q-btn>
+        <q-btn color="secondary" type="submit" :disabled="!isValid">Save</q-btn>
       </q-card-actions>
     </q-form>
+    <q-banner
+      class="bg-info text-white"
+      v-if="settingsStore.activities.length === 0"
+    >
+      Add daily activities in Settings.
+      <template v-slot:action>
+        <q-btn flat color="white" label="Settings" :to="'/settings'" />
+      </template>
+    </q-banner>
   </q-card>
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from "vue";
+import { ref, watch, computed, onMounted } from "vue";
 import { useCalendarStore } from "stores/calendar";
+import { useSettingsStore } from "src/stores/settings";
+import { useAuthStore } from "src/stores/auth";
 import ActivityMark from "../ActivityMark.vue";
 
 const props = defineProps({
-  id: {
-    type: String,
-    required: true,
-  },
   note: {
     type: String,
     required: true,
@@ -79,36 +104,57 @@ const props = defineProps({
 });
 
 const calendarStore = useCalendarStore();
-
-let activities = ref([]);
+const settingsStore = useSettingsStore();
 let note = ref("");
+let isNewForm = ref(true);
 
 const unit = (type) => (type === "time" ? "min" : "times");
 
-onMounted(() => {
-  activities.value = props.activities;
-  note.value = props.note;
-});
+let isValid = computed(
+  () =>
+    isNewForm.value ||
+    props.activities.reduce((acc, cur) => acc + cur.value, 0) > 0 ||
+    note.value !== ""
+);
+
+const onBlur = () => {
+  isNewForm.value = false;
+};
 
 watch(
   () => props.date,
   () => {
-    activities.value = props.activities;
+    isNewForm.value = true;
     note.value = props.note;
   }
 );
 
-const submitForm = () => {
+onMounted(() => {
+  note.value = calendarStore.note;
+});
+
+const saveForm = () => {
+  isNewForm.value = false;
+  const authStore = useAuthStore();
   const currentReport = {
-    id: props.id,
+    id: calendarStore.id,
     note: note.value,
-    activities: activities.value,
+    activities: props.activities,
+    userId: authStore.user.id,
   };
-  if (props.id === "0") {
+  if (calendarStore.id === "0") {
     calendarStore.addReport(currentReport);
   } else {
     calendarStore.updateReport(currentReport);
   }
+};
+
+const clearForm = () => {
+  isNewForm.value = true;
+  calendarStore.deleteReport().then(() => {
+    note.value = "";
+    activities.value = calendarStore.activities;
+  });
 };
 </script>
 
@@ -127,6 +173,7 @@ table {
   margin: 0;
   padding: 0;
   table-layout: fixed;
+  min-width: 100%;
 }
 
 table tr {

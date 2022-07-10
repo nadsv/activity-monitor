@@ -36,21 +36,27 @@
     </div>
     <q-dialog v-model="showActivityItem">
       <ActivityItemForm
-        @formSubmited="closeAddActivityItemModal"
+        @formSubmited="saveActivity"
         :formTitle="title"
         :id="id"
       />
     </q-dialog>
+    <div class="q-pa-md q-gutter-sm">
+      <LogoutBanner />
+    </div>
   </q-page>
 </template>
 
 <script setup>
-import { ref, reactive } from "vue";
+import { ref, onMounted } from "vue";
 import { useSettingsStore } from "stores/settings";
 import ActivityItem from "../components/Settings/ActivityItem.vue";
-import ActivityItemForm from "../components/Modals/ActivityItemForm.vue";
+import ActivityItemForm from "../components/Settings/ActivityItemForm.vue";
+import LogoutBanner from "../components/Settings/LogoutBanner.vue";
+import { useAuthStore } from "../stores/auth";
 
 const storeSettings = useSettingsStore();
+const authStore = useAuthStore();
 
 const showActivityItem = ref(false);
 
@@ -69,9 +75,20 @@ const showEditActivityForm = (value) => {
   showActivityItem.value = true;
 };
 
-const closeAddActivityItemModal = () => {
+const saveActivity = (item) => {
+  if (item.id === "0") {
+    storeSettings.addActivityItem(item);
+  } else {
+    storeSettings.updateActivityItem(item);
+  }
   showActivityItem.value = false;
 };
+
+onMounted(() => {
+  if (storeSettings.activities.length === 0) {
+    storeSettings.setActivities(localStorage.getItem("userId"));
+  }
+});
 </script>
 
 <style scoped>

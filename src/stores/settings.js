@@ -1,73 +1,83 @@
 import { defineStore } from "pinia";
-import { uid } from "quasar";
-import { deepCopyFunction } from "src/utils";
+import { uid, Loading, QSpinnerHourglass } from "quasar";
+import { api } from "boot/axios";
+import { showError } from "../utils";
+
+const loaderConfig = {
+  spinner: QSpinnerHourglass,
+};
 
 export const useSettingsStore = defineStore("settings", {
   state: () => ({
-    activities: [
-      {
-        id: "1",
-        userId: "0",
-        title: "Чтение",
-        active: true,
-        type: "time",
-        color: "#5da356",
-      },
-      {
-        id: "2",
-        userId: "0",
-        title: "Программирование и конструирование",
-        active: true,
-        type: "time",
-        color: "#cf0e0e",
-      },
-      {
-        id: "3",
-        userId: "0",
-        title: "Фитнес",
-        active: true,
-        type: "time",
-        color: "#00ab3c",
-      },
-      {
-        id: "4",
-        userId: "0",
-        title: "Английский",
-        active: true,
-        type: "time",
-        color: "orange",
-      },
-      {
-        id: "5",
-        userId: "0",
-        title: "Испанский",
-        active: false,
-        type: "time",
-        color: "yellow",
-      },
-      {
-        id: "6",
-        userId: "0",
-        title: "Тщательная чистка чайного гриба",
-        active: false,
-        type: "quantity",
-        color: "black",
-      },
-    ],
+    activities: [],
   }),
   getters: {},
   actions: {
-    updateActivityItem(payload) {
-      const index = this.activities.findIndex((x) => x.id === payload.id);
-      this.activities[index] = payload;
+    async setActivities(userId) {
+      Loading.show(loaderConfig);
+      try {
+        const response = await api.get("/api/settings", {
+          params: {
+            userId,
+          },
+        });
+        this.activities = response.data.map((item) => ({
+          ...item,
+          active: item.active === 1 ? true : false,
+        }));
+        Loading.hide();
+      } catch (error) {
+        showError("Error of receiving data", error);
+        Loading.hide();
+      }
     },
-    deleteActivityItem(id) {
-      this.activities = this.activities.filter((item) => item.id !== id);
+
+    async updateActivityItem(payload) {
+      Loading.show(loaderConfig);
+      try {
+        const response = await api.put(
+          "/api/settings/" + payload.id,
+          JSON.stringify(payload)
+        );
+        if (response.data.errors) {
+          throw new Error(response.data.errors);
+        }
+        const index = this.activities.findIndex((x) => x.id === payload.id);
+        this.activities[index] = payload;
+        Loading.hide();
+      } catch (error) {
+        showError("Error of updating data", error);
+        Loading.hide();
+      }
     },
-    addActivityItem(payload) {
+
+    async deleteActivityItem(id) {
+      Loading.show(loaderConfig);
+      try {
+        const response = await api.delete("/api/settings/" + id);
+        this.activities = this.activities.filter((item) => item.id !== id);
+        Loading.hide();
+      } catch (error) {
+        showError("Error of deleting data", error);
+        Loading.hide();
+      }
+    },
+
+    async addActivityItem(payload) {
+      Loading.show(loaderConfig);
       const itemId = uid();
       const item = { ...payload, id: itemId };
-      this.activities.unshift(item);
+      try {
+        const response = await api.post("/api/settings", JSON.stringify(item));
+        if (response.data.errors) {
+          throw new Error(response.data.errors);
+        }
+        this.activities.unshift(item);
+        Loading.hide();
+      } catch (error) {
+        showError("Error of saving data", error);
+        Loading.hide();
+      }
     },
   },
 });

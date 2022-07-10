@@ -1,6 +1,20 @@
+import { Notify, date } from "quasar";
+
+export const showError = (text, error) => {
+  Notify.create({
+    message: `${text}: ${error}`,
+    color: "negative",
+    timeout: 2000,
+  });
+};
+
 export const formatedToday = () => {
-  const now = new Date().toISOString().split("T")[0].split("-");
-  return `${now[0]}/${now[1]}/${now[2]}`;
+  return date.formatDate(new Date(), "YYYY/MM/DD");
+};
+
+export const calcDate = (diff) => {
+  const newDate = date.addToDate(new Date(), diff);
+  return date.formatDate(newDate, "YYYY/MM/DD");
 };
 
 export const deepCopyFunction = (inObject) => {
@@ -21,4 +35,15 @@ export const deepCopyFunction = (inObject) => {
   }
 
   return outObject;
+};
+
+export const isValidEmail = (email) => {
+  const pattern =
+    /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/;
+  return pattern.test(email) || "Invalid email";
+};
+
+export const isValidPassword = (password) => {
+  const pattern = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,32}$/;
+  return pattern.test(password) || "Invalid password";
 };

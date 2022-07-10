@@ -2,10 +2,16 @@
   <router-view />
 </template>
 
-<script>
-import { defineComponent } from 'vue'
+<script setup>
+import { onMounted } from "vue";
+import { useAuthStore } from "./stores/auth";
+import { useChartStore } from "./stores/charts";
 
-export default defineComponent({
-  name: 'App'
-})
+const authStore = useAuthStore();
+const chartStore = useChartStore();
+
+onMounted(() => {
+  authStore.setUser();
+  chartStore.resetSeries();
+});
 </script>

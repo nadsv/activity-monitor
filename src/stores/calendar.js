@@ -1,91 +1,193 @@
 import { defineStore } from "pinia";
-import { formatedToday, deepCopyFunction } from "src/utils";
-import { uid } from "quasar";
+import { uid, Loading, QSpinnerHourglass } from "quasar";
+import { api } from "boot/axios";
+import { showError, formatedToday, deepCopyFunction } from "../utils";
+import { useSettingsStore } from "./settings";
+
+const loaderConfig = {
+  spinner: QSpinnerHourglass,
+};
 
 export const useCalendarStore = defineStore("calendar", {
   state: () => ({
-    dates: ["2022/05/01", "2022/05/02", "2022/05/04"],
-    id: "uniqueId",
+    reports: [],
+    id: "0",
     date: formatedToday(),
-    activities: [
-      {
-        id: "1",
-        userId: "0",
-        title: "Чтение",
-        type: "time",
-        color: "#5da356",
-        value: 50,
-      },
-      {
-        id: "2",
-        userId: "0",
-        title: "Программирование и конструирование моделей будущего",
-        type: "time",
-        color: "#cf0e0e",
-        value: 40,
-      },
-      {
-        id: "3",
-        userId: "0",
-        title: "Фитнес",
-        type: "time",
-        color: "#00ab3c",
-        value: 120,
-      },
-      {
-        id: "4",
-        userId: "0",
-        title: "Английский",
-        type: "time",
-        color: "orange",
-        value: 0,
-      },
-      {
-        id: "5",
-        userId: "0",
-        title: "Испанский",
-        type: "time",
-        color: "yellow",
-        value: 0,
-      },
-      {
-        id: "6",
-        userId: "0",
-        title: "Тщательная чистка чайного гриба",
-        type: "quantity",
-        color: "black",
-        value: 1,
-      },
-    ],
-    note: "It was a wonderful day. I want to remember about it till the end of my life.",
+    activities: [],
+    note: "",
   }),
   getters: {
     reportActivities(state) {
       return deepCopyFunction(state.activities);
+    },
+    datesInMonth(state) {
+      return state.reports.map((report) => report.date);
     },
   },
   actions: {
     setDate(date) {
       this.date = date;
     },
-    updateReport(report) {
-      this.id = report.id;
+
+    setReportId(id) {
+      this.id = id;
+    },
+
+    async setReportActivities(date) {
+      this.activities = [];
+      const report = this.reports.find((item) => item.date === date);
+      if (!!report) {
+        Loading.show(loaderConfig);
+        try {
+          const response = await api.get("/api/report/" + report.id);
+          this.activities = response.data;
+          this.note = report.note;
+          this.id = report.id;
+          Loading.hide();
+        } catch (error) {
+          showError("Error of receiving data", error);
+          Loading.hide();
+        }
+      } else {
+        const settingsStore = useSettingsStore();
+        for (const activity of settingsStore.activities) {
+          if (activity.active) {
+            this.activities.push({ ...activity, value: 0 });
+          }
+        }
+        this.note = "";
+        this.id = 0;
+        Loading.hide();
+      }
+    },
+
+    async getReports(payload) {
+      const loaded = this.reports.some((item) => {
+        const itemDate = new Date(item.date);
+        return (
+          itemDate.getMonth() + 1 == payload.month &&
+          itemDate.getFullYear() == payload.year
+        );
+      });
+
+      if (loaded) return;
+
+      Loading.show(loaderConfig);
+
+      try {
+        const response = await api.get("/api/report", {
+          params: {
+            year: payload.year,
+            month: payload.month,
+            userId: payload.userId,
+          },
+        });
+        const newReports = response.data.map((report) => ({
+          ...report,
+          date: report.date.replace("-", "/"),
+        }));
+        this.reports = [...this.reports, ...newReports];
+        Loading.hide();
+      } catch (error) {
+        showError("Error of receiving data", error);
+        Loading.hide();
+      }
+    },
+
+    async updateReport(report) {
       this.note = report.note;
       this.activities = deepCopyFunction(report.activities);
-      console.log(report);
+      Loading.show(loaderConfig);
+
+      const payload = {
+        id: this.id,
+        note: this.note,
+        date: this.date,
+        userId: report.userId,
+        activities: this.activities.map((item) => ({
+          id: uid(),
+          reportId: this.id,
+          settingsId: item.settingsId,
+          value: item.value,
+        })),
+      };
+
+      Loading.show(loaderConfig);
+
+      try {
+        const response = await api.put(
+          "/api/report/" + this.id,
+          JSON.stringify(payload)
+        );
+        if (response.data.errors) {
+          throw new Error(response.data.errors);
+        }
+        this.reports = this.reports.map((item) =>
+          item.id === this.id
+            ? { id: this.id, date: this.date, note: this.note }
+            : item
+        );
+        Loading.hide();
+      } catch (error) {
+        showError("Error of editing data", error);
+        Loading.hide();
+      }
     },
-    deleteReport(id) {
-      this.id = "";
-      this.note = "";
-      this.activities = [];
-      console.log(report);
+
+    async deleteReport() {
+      Loading.show(loaderConfig);
+
+      try {
+        const response = await api.delete("/api/report/" + this.id);
+        if (response.data.errors) {
+          throw new Error(response.data.errors);
+        }
+        this.note = "";
+        this.activities = this.activities.map((item) => ({
+          ...item,
+          value: 0,
+        }));
+        this.reports = this.reports.filter((item) => item.id !== this.id);
+        Loading.hide();
+      } catch (error) {
+        showError("Error of editing data", error);
+        Loading.hide();
+      }
     },
-    addReport(report) {
+
+    async addReport(report) {
       this.id = uid();
       this.note = report.note;
       this.activities = deepCopyFunction(report.activities);
-      this.dates.push(this.date);
-      console.log(report);
+      Loading.show(loaderConfig);
+
+      const payload = {
+        id: this.id,
+        note: this.note,
+        date: this.date,
+        userId: report.userId,
+        activities: this.activities.map((item) => ({
+          id: uid(),
+          reportId: this.id,
+          settingsId: item.id,
+          value: item.value,
+        })),
+      };
+
+      try {
+        const response = await api.post("/api/report", JSON.stringify(payload));
+        if (response.data.errors) {
+          throw new Error(response.data.errors);
+        }
+        this.reports = [
+          ...this.reports,
+          { id: this.id, date: this.date, note: this.note },
+        ];
+        Loading.hide();
+      } catch (error) {
+        showError("Error of saving data", error);
+        Loading.hide();
+      }
     },
   },
 });

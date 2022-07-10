@@ -55,13 +55,16 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from "vue";
+import { reactive, onMounted } from "vue";
 import { useSettingsStore } from "stores/settings";
+import { useAuthStore } from "stores/auth";
 
-const typeOptions = ref(["time", "quantity"]);
+const typeOptions = ["time", "quantity"];
+
+const authStore = useAuthStore();
 
 const defaultItem = {
-  userId: "0",
+  userId: authStore.user.id,
   title: "",
   active: true,
   type: "time",
@@ -93,12 +96,7 @@ onMounted(() => {
 const emit = defineEmits(["formSubmited"]);
 
 const submitForm = () => {
-  if (props.id === "0") {
-    storeSettings.addActivityItem(activityItem);
-  } else {
-    storeSettings.updateActivityItem(activityItem);
-  }
-  emit("formSubmited");
+  emit("formSubmited", activityItem);
 };
 </script>
 
