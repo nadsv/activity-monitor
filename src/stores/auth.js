@@ -29,7 +29,7 @@ export const useAuthStore = defineStore("auth", {
 
       try {
         const response = await api.post(
-          "/api/registration/",
+          "/api/registration",
           JSON.stringify(user)
         );
         if (response.data.errors) {
@@ -47,7 +47,7 @@ export const useAuthStore = defineStore("auth", {
       Loading.show(loaderConfig);
 
       try {
-        const response = await api.post("/api/login/", JSON.stringify(user));
+        const response = await api.post("/api/login", JSON.stringify(user));
         if (response.data.errors) {
           throw new Error(response.data.errors);
         }
@@ -71,6 +71,8 @@ export const useAuthStore = defineStore("auth", {
         await settingsStore.setActivities(this.user.id);
 
         const calendarStore = useCalendarStore();
+        calendarStore.resetReports();
+
         await calendarStore.getReports({
           month: new Date().getMonth() + 1,
           year: new Date().getFullYear(),
