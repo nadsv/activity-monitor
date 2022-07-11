@@ -33,6 +33,10 @@ export const useCalendarStore = defineStore("calendar", {
       this.id = id;
     },
 
+    resetReports() {
+      this.reports = [];
+    },
+
     async setReportActivities(date) {
       this.activities = [];
       const report = this.reports.find((item) => item.date === date);
