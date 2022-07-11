@@ -21,17 +21,30 @@
           </q-item-label>
         </div>
       </div>
+      <div class="item--marker">
+        <q-checkbox class="color-checkbox" v-model="showLabels" dense />
+      </div>
+      <div class="item--name">
+        <q-item-label> Labels </q-item-label>
+      </div>
     </div>
   </q-card>
 </template>
 
 <script setup>
+import { ref, watch } from "vue";
 import { useChartStore } from "src/stores/charts";
 const props = defineProps({
   series: { type: Array, required: true },
 });
 
 const chartStore = useChartStore();
+
+const showLabels = ref(true);
+
+watch(showLabels, () => {
+  chartStore.chartOptions.dataLabels.enabled = showLabels.value;
+});
 </script>
 
 <style  scoped>
