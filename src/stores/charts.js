@@ -77,26 +77,9 @@ export const useChartStore = defineStore("charts", {
     setPeriod(period) {
       this.period = period;
     },
-    setEndDates(typeOfPeriod) {
-      let diff = {};
-      switch (typeOfPeriod) {
-        case "week":
-          diff = { days: -7 };
-          break;
-        case "month":
-          diff = { month: -1 };
-          break;
-        case "year":
-          diff = { year: -1 };
-          break;
-        case "2 years":
-          diff = { year: -2 };
-          break;
-        default:
-          diff = { days: 0 };
-          break;
-      }
-      this.period.start = calcDate(diff);
+    setDates(payload) {
+      this.period.start = payload.start;
+      this.period.end = payload.end;
     },
     resetSeries() {
       this.allSeries = [];

@@ -45,7 +45,7 @@ const notesStore = useNotesStore();
   margin-right: 50px;
   margin-bottom: 40px;
 }
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 660px) {
   .monitoring-charts {
     min-width: 0;
     margin-right: 0;

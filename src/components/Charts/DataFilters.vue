@@ -10,7 +10,7 @@
               transition-hide="jump-up"
               outlined
               dense
-              v-model="period"
+              v-model="chartsStore.period.type"
               :options="periods"
             />
           </div>
@@ -24,6 +24,7 @@
               mask="date"
               :rules="['date']"
               dense
+              @click="onDateChanged"
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
@@ -57,6 +58,7 @@
               mask="date"
               :rules="['date']"
               dense
+              @click="onDateChanged"
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
@@ -104,40 +106,43 @@ import { useNotesStore } from "stores/notes";
 const chartsStore = useChartStore();
 const notesStore = useNotesStore();
 
-let start = ref(calcDate({ days: -7 }));
-let end = ref(formatedToday());
-let period = ref("week");
 let periods = chartsStore.periods;
 let typeOfData = ref("charts");
 
-watch(period, () => {
-  let diff = {};
-  switch (period.value) {
-    case "week":
-      diff = { days: -7 };
-      break;
-    case "month":
-      diff = { month: -1 };
-      break;
-    case "year":
-      diff = { year: -1 };
-      break;
-    case "2 years":
-      diff = { year: -2 };
-      break;
-    default:
-      diff = { days: 0 };
-      break;
+const onDateChanged = () => {
+  console.log("12121");
+  chartsStore.period.type = "period";
+};
+
+watch(
+  () => chartsStore.period.type,
+  () => {
+    let diff = {};
+    switch (chartsStore.period.type) {
+      case "week":
+        diff = { days: -7 };
+        break;
+      case "month":
+        diff = { month: -1 };
+        break;
+      case "year":
+        diff = { year: -1 };
+        break;
+      case "2 years":
+        diff = { year: -2 };
+        break;
+      default:
+        return;
+    }
+    chartsStore.period.end = formatedToday();
+    chartsStore.period.start = calcDate(diff);
   }
-  end.value = formatedToday();
-  start.value = calcDate(diff);
-  chartsStore.setEndDates(period.value);
-});
+);
 
 const submitForm = () => {
   const payload = {
-    start: start.value,
-    end: end.value,
+    start: chartsStore.period.start,
+    end: chartsStore.period.end,
   };
   chartsStore.resetSeries();
   notesStore.resetNotes();
