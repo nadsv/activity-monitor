@@ -11,7 +11,9 @@
         <div class="text-h6">{{ note.date }}</div>
       </q-card-section>
       <q-separator inset dark />
-      <q-card-section>{{ note.note }}</q-card-section>
+      <q-card-section>
+        <pre>{{ note.note }}</pre>
+      </q-card-section>
     </q-card>
     <div class="row fit items-start justify-center">
       <q-btn
