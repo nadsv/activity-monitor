@@ -31,7 +31,7 @@
               <div>{{ activity.title }}</div>
             </td>
             <td data-label="Value">
-              <div class="flex flex-center">
+              <div class="flex flex-center value-field">
                 <q-input
                   v-model.number="activity.value"
                   type="number"
