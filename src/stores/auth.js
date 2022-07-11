@@ -104,7 +104,6 @@ export const useAuthStore = defineStore("auth", {
         this.resetUser();
         Loading.hide();
       } catch (error) {
-        console.log(error);
         showError("Error of logging out", error);
         Loading.hide();
       }

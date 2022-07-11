@@ -39,7 +39,6 @@ export const useNotesStore = defineStore("notes", {
         this.notes = [...this.notes, ...response.data.data];
         this.nextPage = response.data.next_page_url;
         this.currentPage = response.data.current_page;
-        console.log(response);
         Loading.hide();
       } catch (error) {
         showError("Error of receiving data", error);

@@ -129,6 +129,7 @@ watch(period, () => {
       diff = { days: 0 };
       break;
   }
+  end.value = formatedToday();
   start.value = calcDate(diff);
   chartsStore.setEndDates(period.value);
 });

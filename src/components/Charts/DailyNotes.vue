@@ -44,7 +44,6 @@ const getNextPage = () => {
     start: chartStore.period.start,
     end: chartStore.period.end,
   };
-  console.log(payload);
   notesStore.getNotes(payload);
 };
 </script>
