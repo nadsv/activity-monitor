@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { uid, Loading, QSpinnerHourglass, date } from "quasar";
 import { api } from "boot/axios";
-import { showError } from "../utils";
+import { showError, showMessage } from "../utils";
 import { useSettingsStore } from "./settings";
 import { useCalendarStore } from "./calendar";
 import { useNotesStore } from "./notes";
@@ -36,6 +36,7 @@ export const useAuthStore = defineStore("auth", {
           throw new Error(response.data.errors);
         }
         Loading.hide();
+        showMessage("Successful registration. Please login");
         this.router.push("/login");
       } catch (error) {
         showError("Error of registration", error);

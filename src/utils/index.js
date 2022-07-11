@@ -8,6 +8,14 @@ export const showError = (text, error) => {
   });
 };
 
+export const showMessage = (message) => {
+  Notify.create({
+    message: message,
+    color: "info",
+    timeout: 2000,
+  });
+};
+
 export const formatedToday = () => {
   return date.formatDate(new Date(), "YYYY/MM/DD");
 };
