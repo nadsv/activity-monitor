@@ -10,7 +10,9 @@ import axios from "axios";
 
 axios.defaults.withCredentials = true;
 const api = axios.create({
-  baseURL: "http://activity-monitoring.nadsvebm.beget.tech",
+  baseURL: process.env.DEV
+    ? "http://127.0.0.1:8000"
+    : "http://activity-monitoring.nadsvebm.beget.tech",
 });
 
 export default boot(({ app }) => {

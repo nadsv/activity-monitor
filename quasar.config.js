@@ -83,7 +83,7 @@ module.exports = configure(function (ctx) {
       proxy: {
         // proxy all requests starting with /api to jsonplaceholder
         "/api": {
-          target: "http://activity-monitoring.nadsvebm.beget.tech",
+          target: "http://127.0.0.1:8000",
           changeOrigin: true,
           pathRewrite: {
             "^/api": "",
@@ -120,7 +120,7 @@ module.exports = configure(function (ctx) {
       // directives: [],
 
       // Quasar plugins
-      plugins: ["Dialog", "Notify"],
+      plugins: ["Dialog", "Notify", "Loading"],
     },
 
     // animations: 'all', // --- includes all animations
