@@ -24,7 +24,6 @@ import { ref } from "vue";
 import DailyNotes from "src/components/Charts/DailyNotes.vue";
 import MonitoringCharts from "../components/Charts/MonitoringCharts.vue";
 import DataFilters from "../components/Charts/DataFilters.vue";
-import ShowFilters from "../components/Charts/ShowFilters.vue";
 import { useChartStore } from "src/stores/charts";
 import { useNotesStore } from "src/stores/notes";
 
