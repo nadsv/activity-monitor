@@ -12,7 +12,7 @@ export const showMessage = (message) => {
   Notify.create({
     message: message,
     color: "info",
-    timeout: 2000,
+    timeout: 3000,
   });
 };
 

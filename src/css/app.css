@@ -12,3 +12,7 @@ a {
 .q-checkbox__inner.relative-position.non-selectable.q-checkbox__inner--truthy {
   color: currentColor !important;
 }
+
+.value-field .q-field__control {
+  padding-top: 10px !important;
+}

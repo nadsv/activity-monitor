@@ -111,7 +111,7 @@ export const useCalendarStore = defineStore("calendar", {
         activities: this.activities.map((item) => ({
           id: uid(),
           reportId: this.id,
-          settingsId: item.settingsId,
+          settingsId: item.id,
           value: item.value,
         })),
       };

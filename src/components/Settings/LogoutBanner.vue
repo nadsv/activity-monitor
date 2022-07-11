@@ -6,7 +6,7 @@
     Logout from your session
 
     <template v-slot:action>
-      <q-btn flat label="ОК" @click="logout" />
+      <q-btn flat label="ОК" @click="logout" class="bg-negative" />
     </template>
   </q-banner>
 </template>
