@@ -24,13 +24,16 @@
         </thead>
         <tbody>
           <tr v-for="activity in activities" :key="activity.id">
-            <td data-label="Mark">
+            <td data-label="Mark" class="td--zero-padding">
               <ActivityMark :color="activity.color" class="mark" />
             </td>
-            <td data-label="Activity" class="text-left">
+            <td data-label="Activity" class="text-left td--zero-padding">
               <div>{{ activity.title }}</div>
             </td>
-            <td data-label="Value">
+            <td
+              data-label="Value"
+              class="row td--zero-padding justify-center justify-field"
+            >
               <div class="flex flex-center value-field">
                 <q-input
                   v-model.number="activity.value"
@@ -38,14 +41,15 @@
                   min="0"
                   max="1440"
                   dense
+                  filled
                   bottom-slots
                   error-message="One of the values must be filled"
                   :error="!isValid"
                   lazy-rules
                   @blur="onBlur"
                 />
-                <div style="width: 40px">{{ unit(activity.type) }}</div>
               </div>
+              <div class="unit-field">{{ unit(activity.type) }}</div>
             </td>
           </tr>
         </tbody>
@@ -160,7 +164,17 @@ const clearForm = () => {
 
 <style scoped>
 .card {
-  min-width: 290px;
+  min-width: 350px;
+}
+
+.value-field {
+  margin-top: 18px;
+}
+
+.unit-field {
+  margin-top: 28px;
+  margin-left: 5px;
+  width: 40px;
 }
 
 .mark {
@@ -185,6 +199,11 @@ table tr {
 table th,
 table td {
   padding: 0.625em;
+}
+
+.td--zero-padding {
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 table th {
@@ -215,6 +234,11 @@ table th {
     margin-bottom: 0.625em;
   }
 
+  .td--zero-padding {
+    padding-top: 0.625em;
+    padding-bottom: 0.625em;
+  }
+
   table td {
     border-bottom: 1px solid #ddd;
     display: flex;
@@ -241,6 +265,18 @@ table th {
 
   .mark {
     margin: 0;
+  }
+
+  .unit-field {
+    margin-top: 0;
+  }
+
+  .card {
+    min-width: 100%;
+  }
+
+  .justify-field {
+    justify-content: start;
   }
 }
 </style>

@@ -88,6 +88,7 @@ const createFieldList = (date) => {
 
 onMounted(() => {
   date.value = calendarStore.date;
+  calendarStore.setReportActivities(date.value);
 });
 
 const changeMonthYear = debounce(function (cur) {

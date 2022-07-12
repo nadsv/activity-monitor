@@ -38,7 +38,6 @@ export const useCalendarStore = defineStore("calendar", {
     },
 
     async setReportActivities(date) {
-      this.activities = [];
       const report = this.reports.find((item) => item.date === date);
       if (!!report) {
         Loading.show(loaderConfig);
@@ -111,7 +110,7 @@ export const useCalendarStore = defineStore("calendar", {
         activities: this.activities.map((item) => ({
           id: uid(),
           reportId: this.id,
-          settingsId: item.id,
+          settingsId: item.id || item.settingsId,
           value: item.value,
         })),
       };
@@ -173,7 +172,7 @@ export const useCalendarStore = defineStore("calendar", {
         activities: this.activities.map((item) => ({
           id: uid(),
           reportId: this.id,
-          settingsId: item.id,
+          settingsId: item.id || item.settingsId,
           value: item.value,
         })),
       };
