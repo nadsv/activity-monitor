@@ -27,7 +27,11 @@
               @click="onDateChanged"
             >
               <template v-slot:append>
-                <q-icon name="event" class="cursor-pointer">
+                <q-icon
+                  name="event"
+                  class="cursor-pointer"
+                  @click="onDateChanged"
+                >
                   <q-popup-proxy
                     cover
                     transition-show="scale"
@@ -61,7 +65,11 @@
               @click="onDateChanged"
             >
               <template v-slot:append>
-                <q-icon name="event" class="cursor-pointer">
+                <q-icon
+                  name="event"
+                  class="cursor-pointer"
+                  @click="onDateChanged"
+                >
                   <q-popup-proxy
                     cover
                     transition-show="scale"
@@ -110,7 +118,6 @@ let periods = chartsStore.periods;
 let typeOfData = ref("charts");
 
 const onDateChanged = () => {
-  console.log("12121");
   chartsStore.period.type = "period";
 };
 
