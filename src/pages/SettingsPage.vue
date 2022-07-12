@@ -83,12 +83,6 @@ const saveActivity = (item) => {
   }
   showActivityItem.value = false;
 };
-
-onMounted(() => {
-  if (storeSettings.activities.length === 0) {
-    storeSettings.setActivities(localStorage.getItem("userId"));
-  }
-});
 </script>
 
 <style scoped>

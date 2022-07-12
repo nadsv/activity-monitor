@@ -136,7 +136,7 @@ watch(date, (curDate, prevDate) => {
 .date-checker {
   margin-right: 50px;
 }
-@media screen and (max-width: 660px) {
+@media screen and (max-width: 705px) {
   .date-checker {
     margin-right: 100%;
     margin-left: 100%;

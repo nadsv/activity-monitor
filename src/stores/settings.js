@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { uid, Loading, QSpinnerHourglass } from "quasar";
 import { api } from "boot/axios";
 import { showError } from "../utils";
+import { useCalendarStore } from "./calendar";
 
 const loaderConfig = {
   spinner: QSpinnerHourglass,
@@ -44,6 +45,8 @@ export const useSettingsStore = defineStore("settings", {
         }
         const index = this.activities.findIndex((x) => x.id === payload.id);
         this.activities[index] = payload;
+        const calendarStore = useCalendarStore();
+        calendarStore.setReportActivities(calendarStore.date);
         Loading.hide();
       } catch (error) {
         showError("Error of updating data", error);
@@ -73,6 +76,8 @@ export const useSettingsStore = defineStore("settings", {
           throw new Error(response.data.errors);
         }
         this.activities.unshift(item);
+        const calendarStore = useCalendarStore();
+        calendarStore.setReportActivities(calendarStore.date);
         Loading.hide();
       } catch (error) {
         showError("Error of saving data", error);

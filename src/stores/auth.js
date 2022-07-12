@@ -80,7 +80,7 @@ export const useAuthStore = defineStore("auth", {
           userId: this.user.id,
         });
 
-        await calendarStore.setReportActivities(calendarStore.date);
+        //await calendarStore.setReportActivities(calendarStore.date);
 
         const notesStore = useNotesStore();
         notesStore.resetNotes();
