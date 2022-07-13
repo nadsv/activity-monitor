@@ -124,7 +124,9 @@ export const useAuthStore = defineStore("auth", {
           try {
             api.defaults.headers.common["Authorization"] =
               localStorage.getItem("token");
-            const response = await api.get("/api/user/");
+            const response = await api.get(
+              "/api/user/" + localStorage.getItem("userId")
+            );
             if (response.data.errors) {
               throw new Error(response.data.errors);
             }
@@ -154,6 +156,7 @@ export const useAuthStore = defineStore("auth", {
           }
           return;
         }
+      } else {
         this.resetUser();
       }
     },
