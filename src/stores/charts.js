@@ -89,7 +89,7 @@ export const useChartStore = defineStore("charts", {
       Loading.show(loaderConfig);
       try {
         const authStore = useAuthStore();
-        const response = await api.get("/api/chart/", {
+        const response = await api.get("/api/chart", {
           params: {
             start: payload.start,
             end: payload.end,
