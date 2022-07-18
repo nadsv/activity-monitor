@@ -28,7 +28,7 @@ export const useNotesStore = defineStore("notes", {
       Loading.show(loaderConfig);
       try {
         const authStore = useAuthStore();
-        const response = await api.get("/api/notes/", {
+        const response = await api.get("/api/notes", {
           params: {
             start: payload.start,
             end: payload.end,
