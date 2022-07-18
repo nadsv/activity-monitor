@@ -46,7 +46,8 @@
                   error-message="One of the values must be filled"
                   :error="!isValid"
                   lazy-rules
-                  @blur="onBlur"
+                  @blur="onValueBlur(activity)"
+                  @click="onValueClick(activity)"
                 />
               </div>
               <div class="unit-field">{{ unit(activity.type) }}</div>
@@ -121,8 +122,17 @@ let isValid = computed(
     note.value !== ""
 );
 
-const onBlur = () => {
+const onValueBlur = (activity) => {
   isNewForm.value = false;
+  if (activity.value === "") {
+    activity.value = 0;
+  }
+};
+
+const onValueClick = (activity) => {
+  if (activity.value === 0) {
+    activity.value = "";
+  }
 };
 
 watch(
@@ -146,6 +156,7 @@ const saveForm = () => {
     activities: props.activities,
     userId: authStore.user.id,
   };
+  console.log(currentReport);
   if (+calendarStore.id === 0) {
     calendarStore.addReport(currentReport);
   } else {
