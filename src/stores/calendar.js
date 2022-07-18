@@ -53,6 +53,7 @@ export const useCalendarStore = defineStore("calendar", {
         }
       } else {
         const settingsStore = useSettingsStore();
+        this.activities = [];
         for (const activity of settingsStore.activities) {
           if (activity.active) {
             this.activities.push({ ...activity, value: 0 });
