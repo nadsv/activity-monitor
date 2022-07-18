@@ -85,7 +85,7 @@ module.exports = configure(function (ctx) {
         "/api": {
           target: process.env.DEV
             ? "http://127.0.0.1:8000"
-            : "http://activity-monitoring.nadsvebm.beget.tech",
+            : "https://activity-monitoring.ru",
           changeOrigin: true,
           pathRewrite: {
             "^/api": "",

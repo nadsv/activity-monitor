@@ -12,7 +12,7 @@ axios.defaults.withCredentials = true;
 const api = axios.create({
   baseURL: process.env.DEV
     ? "http://127.0.0.1:8000"
-    : "http://activity-monitoring.nadsvebm.beget.tech",
+    : "https://activity-monitoring.ru",
 });
 
 export default boot(({ app }) => {
