@@ -164,6 +164,10 @@ export const useAuthStore = defineStore("auth", {
     resetUser() {
       this.user = {};
       this.authanticated = false;
+      const settingsStore = useSettingsStore();
+      settingsStore.$reset();
+      const calendarStore = useCalendarStore();
+      calendarStore.$reset();
       api.defaults.headers.common["Authorization"] = "";
       localStorage.clear();
       this.router.push("/login");
