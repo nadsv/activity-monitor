@@ -14,7 +14,14 @@ export const useNotesStore = defineStore("notes", {
     nextPage: 1,
     currentPage: 0,
   }),
-  getters: {},
+  getters: {
+    formatedNotes(state) {
+      return state.notes.map((item) => ({
+        ...item,
+        note: item.note.replaceAll("\n", "<br/>"),
+      }));
+    },
+  },
   actions: {
     resetNotes() {
       this.notes = [];
