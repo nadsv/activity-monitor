@@ -84,7 +84,7 @@ module.exports = configure(function (ctx) {
         // proxy all requests starting with /api to jsonplaceholder
         "/api": {
           target: process.env.DEV
-            ? "http://127.0.0.1:8000"
+            ? "https://activity-monitoring.ru" //"http://127.0.0.1:8000"
             : "https://activity-monitoring.ru",
           changeOrigin: true,
           pathRewrite: {

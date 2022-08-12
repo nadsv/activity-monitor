@@ -7,9 +7,7 @@
     >
       <q-card-section>
         <div
-          class="
-            text-secondary text-center text-uppercase text-h5 text-underline
-          "
+          class="text-secondary text-center text-uppercase text-h5 text-underline"
         >
           Report
         </div>
@@ -59,7 +57,7 @@
       <q-card-section>
         <div class="text-subtitle2">Note</div>
         <q-input
-          v-model="note"
+          v-model="calendarStore.note"
           filled
           autogrow
           type="textarea"
@@ -94,10 +92,6 @@ import { useAuthStore } from "src/stores/auth";
 import ActivityMark from "../ActivityMark.vue";
 
 const props = defineProps({
-  note: {
-    type: String,
-    required: true,
-  },
   activities: {
     type: Array,
     required: true,
@@ -119,7 +113,7 @@ let isValid = computed(
   () =>
     isNewForm.value ||
     props.activities.reduce((acc, cur) => acc + cur.value, 0) > 0 ||
-    note.value !== ""
+    calendarStore.note !== ""
 );
 
 const onValueBlur = (activity) => {
@@ -139,24 +133,18 @@ watch(
   () => props.date,
   () => {
     isNewForm.value = true;
-    note.value = props.note;
   }
 );
-
-onMounted(() => {
-  note.value = calendarStore.note;
-});
 
 const saveForm = () => {
   isNewForm.value = false;
   const authStore = useAuthStore();
   const currentReport = {
     id: calendarStore.id,
-    note: note.value,
+    note: calendarStore.note,
     activities: props.activities,
     userId: authStore.user.id,
   };
-  console.log(currentReport);
   if (+calendarStore.id === 0) {
     calendarStore.addReport(currentReport);
   } else {
@@ -167,7 +155,7 @@ const saveForm = () => {
 const clearForm = () => {
   isNewForm.value = true;
   calendarStore.deleteReport().then(() => {
-    note.value = "";
+    calendarStore.note = "";
     activities.value = calendarStore.activities;
   });
 };

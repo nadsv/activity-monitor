@@ -1,15 +1,7 @@
 <template>
   <q-page class="q-pa-md">
     <div
-      class="
-        fit
-        row
-        wrap
-        justify-center
-        items-start
-        content-center
-        q-gutter-y-lg
-      "
+      class="fit row wrap justify-center items-start content-center q-gutter-y-lg"
     >
       <q-date
         v-model="date"
@@ -19,11 +11,7 @@
         :emit-immediately="true"
         :navigation-max-year-month="navigationMaxYearMonth"
       />
-      <DayForm
-        :activities="activities"
-        :note="note"
-        :date="calendarStore.date"
-      />
+      <DayForm :activities="activities" :date="calendarStore.date" />
     </div>
   </q-page>
 </template>
@@ -68,19 +56,17 @@ const createFieldList = (date) => {
 
   if (date === calendarStore.date) {
     activities.value = calendarStore.reportActivities;
-    note.value = calendarStore.note;
     id.value = calendarStore.id;
     return;
   }
   if (index > -1) {
     calendarStore.setReportActivities(date).then(() => {
       activities.value = calendarStore.reportActivities;
-      note.value = calendarStore.note;
       calendarStore.setDate(date);
     });
   } else {
     activities.value = pattern();
-    note.value = "";
+    calendarStore.note = "";
     calendarStore.setDate(date);
     calendarStore.setReportId("0");
   }

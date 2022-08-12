@@ -11,7 +11,7 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 const api = axios.create({
   baseURL: process.env.DEV
-    ? "http://127.0.0.1:8000"
+    ? "https://activity-monitoring.ru"
     : "https://activity-monitoring.ru",
 });
 
