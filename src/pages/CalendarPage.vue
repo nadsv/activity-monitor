@@ -3,14 +3,17 @@
     <div
       class="fit row wrap justify-center items-start content-center q-gutter-y-lg"
     >
-      <q-date
-        v-model="date"
-        :events="calendarStore.datesInMonth"
-        class="date-checker"
-        :locale="myLocale"
-        :emit-immediately="true"
-        :navigation-max-year-month="navigationMaxYearMonth"
-      />
+      <div class="first-block">
+        <q-date
+          v-model="date"
+          class="date-picker"
+          :events="calendarStore.datesInMonth"
+          :locale="myLocale"
+          :emit-immediately="true"
+          :navigation-max-year-month="navigationMaxYearMonth"
+        />
+        <MoodPanel />
+      </div>
       <DayForm :activities="activities" :date="calendarStore.date" />
     </div>
   </q-page>
@@ -19,6 +22,7 @@
 <script setup>
 import { ref, toRef, onMounted, watch } from "vue";
 import DayForm from "../components/Calendar/DayForm.vue";
+import MoodPanel from "../components/Calendar/MoodPanel.vue";
 import { useCalendarStore } from "stores/calendar";
 import { useSettingsStore } from "stores/settings";
 import { useAuthStore } from "../stores/auth";
@@ -120,11 +124,15 @@ watch(date, (curDate, prevDate) => {
 </script>
 
 <style scoped>
-.date-checker {
+.first-block {
   margin-right: 50px;
 }
+
+.date-picker {
+  margin: 0 auto 20px auto;
+}
 @media screen and (max-width: 705px) {
-  .date-checker {
+  .first-block {
     margin-right: 100%;
     margin-left: 100%;
   }

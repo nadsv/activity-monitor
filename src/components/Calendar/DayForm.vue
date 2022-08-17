@@ -5,13 +5,6 @@
       greedy
       v-if="calendarStore.reportActivities.length"
     >
-      <q-card-section>
-        <div
-          class="text-secondary text-center text-uppercase text-h5 text-underline"
-        >
-          Report
-        </div>
-      </q-card-section>
       <table>
         <thead>
           <tr class="text-primary">
