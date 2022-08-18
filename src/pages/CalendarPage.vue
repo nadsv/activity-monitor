@@ -1,7 +1,7 @@
 <template>
   <q-page class="q-pa-md">
     <div
-      class="fit row wrap justify-center items-start content-center q-gutter-y-lg"
+      class="fit row wrap justify-center items-start content-center q-gutter-y-lg q-gutter-x-xl"
     >
       <div class="first-block">
         <q-date
@@ -12,9 +12,10 @@
           :emit-immediately="true"
           :navigation-max-year-month="navigationMaxYearMonth"
         />
-        <MoodPanel />
+        <summary-panel />
       </div>
-      <DayForm :activities="activities" :date="calendarStore.date" />
+      <day-form :activities="activities" :date="calendarStore.date" />
+      <action-panel />
     </div>
   </q-page>
 </template>
@@ -22,7 +23,8 @@
 <script setup>
 import { ref, toRef, onMounted, watch } from "vue";
 import DayForm from "../components/Calendar/DayForm.vue";
-import MoodPanel from "../components/Calendar/MoodPanel.vue";
+import SummaryPanel from "../components/Calendar/SummaryPanel.vue";
+import ActionPanel from "src/components/Calendar/ActionPanel.vue";
 import { useCalendarStore } from "stores/calendar";
 import { useSettingsStore } from "stores/settings";
 import { useAuthStore } from "../stores/auth";
@@ -124,12 +126,8 @@ watch(date, (curDate, prevDate) => {
 </script>
 
 <style scoped>
-.first-block {
-  margin-right: 50px;
-}
-
 .date-picker {
-  margin: 0 auto 20px auto;
+  margin: 0 auto 20px 0;
 }
 @media screen and (max-width: 705px) {
   .first-block {
