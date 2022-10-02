@@ -1,10 +1,6 @@
 <template>
   <q-card class="card">
-    <q-form
-      @submit="saveForm"
-      greedy
-      v-if="calendarStore.reportActivities.length"
-    >
+    <div v-if="calendarStore.reportActivities.length">
       <table>
         <thead>
           <tr class="text-primary">
@@ -34,9 +30,6 @@
                   dense
                   filled
                   bottom-slots
-                  error-message="One of the values must be filled"
-                  :error="!isValid"
-                  lazy-rules
                   @blur="onValueBlur(activity)"
                   @click="onValueClick(activity)"
                 />
@@ -46,25 +39,7 @@
           </tr>
         </tbody>
       </table>
-
-      <q-card-section>
-        <div class="text-subtitle2">Note</div>
-        <q-input
-          v-model="calendarStore.note"
-          filled
-          autogrow
-          type="textarea"
-          bottom-slots
-          error-message="One of the values must be filled"
-          :error="!isValid"
-          lazy-rules
-        />
-      </q-card-section>
-      <q-card-actions align="right">
-        <q-btn color="negative" type="button" @click="clearForm">Clear</q-btn>
-        <q-btn color="secondary" type="submit" :disabled="!isValid">Save</q-btn>
-      </q-card-actions>
-    </q-form>
+    </div>
     <q-banner
       class="bg-info text-white"
       v-if="settingsStore.activities.length === 0"
@@ -78,10 +53,10 @@
 </template>
 
 <script setup>
-import { ref, watch, computed, onMounted } from "vue";
+import { ref, watch, onMounted } from "vue";
 import { useCalendarStore } from "stores/calendar";
 import { useSettingsStore } from "src/stores/settings";
-import { useAuthStore } from "src/stores/auth";
+
 import ActivityMark from "../ActivityMark.vue";
 
 const props = defineProps({
@@ -97,20 +72,11 @@ const props = defineProps({
 
 const calendarStore = useCalendarStore();
 const settingsStore = useSettingsStore();
-let note = ref("");
-let isNewForm = ref(true);
 
 const unit = (type) => (type === "time" ? "min" : "times");
 
-let isValid = computed(
-  () =>
-    isNewForm.value ||
-    props.activities.reduce((acc, cur) => acc + cur.value, 0) > 0 ||
-    calendarStore.note !== ""
-);
-
 const onValueBlur = (activity) => {
-  isNewForm.value = false;
+  calendarStore.isNewForm = false;
   if (activity.value === "") {
     activity.value = 0;
   }
@@ -125,33 +91,13 @@ const onValueClick = (activity) => {
 watch(
   () => props.date,
   () => {
-    isNewForm.value = true;
+    calendarStore.isNewForm = true;
   }
 );
 
-const saveForm = () => {
-  isNewForm.value = false;
-  const authStore = useAuthStore();
-  const currentReport = {
-    id: calendarStore.id,
-    note: calendarStore.note,
-    activities: props.activities,
-    userId: authStore.user.id,
-  };
-  if (+calendarStore.id === 0) {
-    calendarStore.addReport(currentReport);
-  } else {
-    calendarStore.updateReport(currentReport);
-  }
-};
-
-const clearForm = () => {
-  isNewForm.value = true;
-  calendarStore.deleteReport().then(() => {
-    calendarStore.note = "";
-    activities.value = calendarStore.activities;
-  });
-};
+onMounted(() => {
+  console.log("activities", props.activities);
+});
 </script>
 
 <style scoped>

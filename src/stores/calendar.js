@@ -14,8 +14,9 @@ export const useCalendarStore = defineStore("calendar", {
     id: "0",
     date: formatedToday(),
     activities: [],
-    mood: "3",
+    mood: "4",
     note: "",
+    isNewForm: true,
   }),
   getters: {
     reportActivities(state) {

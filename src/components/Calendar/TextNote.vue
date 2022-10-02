@@ -2,19 +2,18 @@
   <div>
     <div class="text-subtitle2">Note</div>
     <q-input
-      v-model="text"
+      :value="text"
       @blur="changeNote($event.target.value)"
       filled
       autogrow
       type="textarea"
       bottom-slots
-      lazy-rules
     />
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 const props = defineProps({
   modelValue: {
@@ -23,12 +22,18 @@ const props = defineProps({
   },
 });
 
-const text = ref(props.modelValue);
-
 const emit = defineEmits(["update:modelValue"]);
 
+const text = computed({
+  get() {
+    return props.modelValue;
+  },
+  set(val) {
+    text.value = val;
+  },
+});
+
 const changeNote = (value) => {
-  console.log(value);
   emit("update:modelValue", value);
 };
 </script>

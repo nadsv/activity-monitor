@@ -15,7 +15,7 @@
         <summary-panel />
       </div>
       <day-form :activities="activities" :date="calendarStore.date" />
-      <action-panel />
+      <action-panel :activities="activities" />
     </div>
   </q-page>
 </template>

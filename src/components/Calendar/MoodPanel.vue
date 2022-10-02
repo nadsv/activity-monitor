@@ -78,7 +78,6 @@ const mood = ref(props.modelValue);
 const emit = defineEmits(["update:modelValue"]);
 
 const changeMood = (value) => {
-  console.log(value);
   emit("update:modelValue", value);
 };
 </script>
