@@ -40,7 +40,7 @@ let id = ref("");
 const today = new Date();
 const MONTH = today.getMonth() + 1;
 const YEAR = today.getFullYear();
-const navigationMaxYearMonth = ref(`${YEAR}/${("0" + MONTH).substring(0, 2)}`);
+const navigationMaxYearMonth = ref(`${YEAR}/${("0" + MONTH).substr(-2)}`);
 
 const myLocale = {
   firstDayOfWeek: 1,
