@@ -10,7 +10,6 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
 import MoodPanel from "./MoodPanel.vue";
 import TextNote from "./TextNote.vue";
 import { useCalendarStore } from "stores/calendar";

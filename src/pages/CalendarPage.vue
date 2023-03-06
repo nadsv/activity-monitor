@@ -65,15 +65,14 @@ const createFieldList = (date) => {
     id.value = calendarStore.id;
     return;
   }
+  calendarStore.setDate(date);
   if (index > -1) {
     calendarStore.setReportActivities(date).then(() => {
       activities.value = calendarStore.reportActivities;
-      calendarStore.setDate(date);
     });
   } else {
     activities.value = pattern();
     calendarStore.note = "";
-    calendarStore.setDate(date);
     calendarStore.setReportId("0");
   }
 };

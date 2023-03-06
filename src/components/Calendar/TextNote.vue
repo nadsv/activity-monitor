@@ -1,14 +1,7 @@
 <template>
   <div>
     <div class="text-subtitle2">Note</div>
-    <q-input
-      :value="text"
-      @blur="changeNote($event.target.value)"
-      filled
-      autogrow
-      type="textarea"
-      bottom-slots
-    />
+    <q-input v-model="text" filled autogrow type="textarea" bottom-slots />
   </div>
 </template>
 
@@ -29,7 +22,7 @@ const text = computed({
     return props.modelValue;
   },
   set(val) {
-    text.value = val;
+    emit("update:modelValue", val);
   },
 });
 
