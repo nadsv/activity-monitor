@@ -25,10 +25,6 @@ const text = computed({
     emit("update:modelValue", val);
   },
 });
-
-const changeNote = (value) => {
-  emit("update:modelValue", value);
-};
 </script>
 
 <style scoped></style>

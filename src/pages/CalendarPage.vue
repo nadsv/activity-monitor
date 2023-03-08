@@ -34,7 +34,6 @@ const calendarStore = useCalendarStore();
 const settingsStore = useSettingsStore();
 const authStore = useAuthStore();
 const date = ref("");
-let note = ref("");
 let activities = ref([]);
 let id = ref("");
 const today = new Date();
@@ -73,6 +72,7 @@ const createFieldList = (date) => {
   } else {
     activities.value = pattern();
     calendarStore.note = "";
+    calendarStore.mood = "4";
     calendarStore.setReportId("0");
   }
 };

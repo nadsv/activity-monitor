@@ -47,6 +47,7 @@ export const useCalendarStore = defineStore("calendar", {
           const response = await api.get("/api/report/" + report.id);
           this.activities = response.data;
           this.note = report.note;
+          this.mood = report.mood.toString();
           this.id = report.id;
           Loading.hide();
         } catch (error) {
@@ -108,6 +109,7 @@ export const useCalendarStore = defineStore("calendar", {
       const payload = {
         id: this.id,
         note: this.note,
+        mood: this.mood,
         date: this.date,
         userId: report.userId,
         activities: this.activities.map((item) => ({
@@ -170,6 +172,7 @@ export const useCalendarStore = defineStore("calendar", {
       const payload = {
         id: this.id,
         note: this.note,
+        mood: this.mood,
         date: this.date,
         userId: report.userId,
         activities: this.activities.map((item) => ({
