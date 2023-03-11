@@ -1,8 +1,6 @@
 <template>
   <q-page class="q-pa-md">
-    <div
-      class="fit row wrap justify-center items-start content-center q-gutter-y-lg q-gutter-x-xl"
-    >
+    <div class="fit row wrap justify-evenly items-start q-gutter-y-lg">
       <div class="first-block">
         <q-date
           v-model="date"
@@ -21,7 +19,7 @@
 </template>
 
 <script setup>
-import { ref, toRef, onMounted, watch } from "vue";
+import { ref, onMounted, watch } from "vue";
 import DayForm from "../components/Calendar/DayForm.vue";
 import SummaryPanel from "../components/Calendar/SummaryPanel.vue";
 import ActionPanel from "src/components/Calendar/ActionPanel.vue";
@@ -127,11 +125,5 @@ watch(date, (curDate, prevDate) => {
 <style scoped>
 .date-picker {
   margin: 0 auto 20px 0;
-}
-@media screen and (max-width: 705px) {
-  .first-block {
-    margin-right: 100%;
-    margin-left: 100%;
-  }
 }
 </style>

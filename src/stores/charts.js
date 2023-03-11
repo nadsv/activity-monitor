@@ -103,7 +103,7 @@ export const useChartStore = defineStore("charts", {
           item["name"] = chart.title;
           item["color"] = chart.color;
           item["unit"] = chart.type;
-          item["show"] = true;
+          item["show"] = false;
           let data = [];
           for (let value in chart.values) {
             data.push({ x: value, y: chart.values[value] });
