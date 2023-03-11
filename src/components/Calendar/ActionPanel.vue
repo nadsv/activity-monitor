@@ -32,11 +32,11 @@ const saveForm = () => {
     activities: props.activities,
     userId: authStore.user.id,
   };
-  /* if (+calendarStore.id === 0) {
+  if (+calendarStore.id === 0) {
     calendarStore.addReport(currentReport);
   } else {
     calendarStore.updateReport(currentReport);
-  }*/
+  }
   console.log(currentReport);
 };
 

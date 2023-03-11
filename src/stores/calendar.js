@@ -103,13 +103,14 @@ export const useCalendarStore = defineStore("calendar", {
 
     async updateReport(report) {
       this.note = report.note;
+      this.mood = report.mood;
       this.activities = deepCopyFunction(report.activities);
       Loading.show(loaderConfig);
 
       const payload = {
         id: this.id,
         note: this.note,
-        mood: this.mood,
+        mood: +this.mood,
         date: this.date,
         userId: report.userId,
         activities: this.activities.map((item) => ({
@@ -132,7 +133,7 @@ export const useCalendarStore = defineStore("calendar", {
         }
         this.reports = this.reports.map((item) =>
           item.id === this.id
-            ? { id: this.id, date: this.date, note: this.note }
+            ? { id: this.id, date: this.date, note: this.note, mood: this.mood }
             : item
         );
         Loading.hide();
@@ -151,6 +152,7 @@ export const useCalendarStore = defineStore("calendar", {
           throw new Error(response.data.errors);
         }
         this.note = "";
+        this.mood = "4";
         this.activities = this.activities.map((item) => ({
           ...item,
           value: 0,
@@ -166,13 +168,14 @@ export const useCalendarStore = defineStore("calendar", {
     async addReport(report) {
       this.id = uid();
       this.note = report.note;
+      this.mood = report.mood;
       this.activities = deepCopyFunction(report.activities);
       Loading.show(loaderConfig);
 
       const payload = {
         id: this.id,
         note: this.note,
-        mood: this.mood,
+        mood: +this.mood,
         date: this.date,
         userId: report.userId,
         activities: this.activities.map((item) => ({
@@ -190,7 +193,7 @@ export const useCalendarStore = defineStore("calendar", {
         }
         this.reports = [
           ...this.reports,
-          { id: this.id, date: this.date, note: this.note },
+          { id: this.id, date: this.date, note: this.note, mood: this.mood },
         ];
         Loading.hide();
       } catch (error) {
