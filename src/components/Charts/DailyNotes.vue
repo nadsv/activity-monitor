@@ -8,10 +8,12 @@
       bordered
     >
       <q-card-section>
-        <div class="text-h6">{{ note.date }}</div>
+        <div class="text-subtitle2">
+          <q-icon :name="emoji(note.mood)" size="1.4em" color="secondary" />
+          {{ note.date }}
+        </div>
+        <div class="text-body2" v-html="note.note"></div>
       </q-card-section>
-      <q-separator inset dark />
-      <q-card-section v-html="note.note"> </q-card-section>
     </q-card>
     <div class="row fit items-start justify-center">
       <q-btn
@@ -28,9 +30,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 import { useNotesStore } from "src/stores/notes";
 import { useChartStore } from "src/stores/charts";
+import { emojiMap } from "src/utils";
 
 const notes = ref([]);
 
@@ -44,9 +47,13 @@ const getNextPage = () => {
   };
   notesStore.getNotes(payload);
 };
+
+const emoji = (mood) => {
+  return emojiMap.get(mood.toString());
+};
 </script>
 
-<style  scoped>
+<style scoped>
 .notes {
   min-width: 250px;
   max-width: 600px;

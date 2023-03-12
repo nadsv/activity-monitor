@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { uid, Loading, QSpinnerHourglass } from "quasar";
+import { date, Loading, QSpinnerHourglass } from "quasar";
 import { api } from "boot/axios";
 import { showError } from "../utils";
 import { useAuthStore } from "./auth";
@@ -18,6 +18,7 @@ export const useNotesStore = defineStore("notes", {
     formatedNotes(state) {
       return state.notes.map((item) => ({
         ...item,
+        date: date.formatDate(item.date, "D.MM.YYYY"),
         note: item.note.replaceAll("\n", "<br/>"),
       }));
     },

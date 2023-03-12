@@ -55,3 +55,11 @@ export const isValidPassword = (password) => {
   const pattern = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,32}$/;
   return pattern.test(password) || "Invalid password";
 };
+
+export const emojiMap = new Map();
+emojiMap.set("1", "fas fa-face-angry");
+emojiMap.set("2", "fas fa-face-sad-cry");
+emojiMap.set("3", "fas fas fa-face-frown");
+emojiMap.set("4", "fas fa-face-meh");
+emojiMap.set("5", "fas fa-face-smile");
+emojiMap.set("6", "fas fa-face-grin-beam");

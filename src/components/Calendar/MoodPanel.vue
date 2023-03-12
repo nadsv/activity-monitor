@@ -2,64 +2,23 @@
   <div class="text-subtitle2">Mood</div>
   <div class="mood-list">
     <q-radio
+      v-for="emoji in emojiMap"
+      :key="emoji[0]"
       v-model="mood"
       size="xl"
       dense
       color="secondary"
-      checked-icon="fas fa-face-angry"
-      unchecked-icon="fas fa-face-angry"
-      val="1"
-    />
-    <q-radio
-      v-model="mood"
-      size="xl"
-      dense
-      color="secondary"
-      checked-icon="fas fa-face-sad-cry"
-      unchecked-icon="fas fa-face-sad-cry"
-      val="2"
-    />
-    <q-radio
-      v-model="mood"
-      size="xl"
-      dense
-      color="secondary"
-      checked-icon="fas fa-face-frown"
-      unchecked-icon="fas fa-face-frown"
-      val="3"
-    />
-    <q-radio
-      v-model="mood"
-      size="xl"
-      dense
-      color="secondary"
-      checked-icon="fas fa-face-meh"
-      unchecked-icon="fas fa-face-meh"
-      val="4"
-    />
-    <q-radio
-      v-model="mood"
-      size="xl"
-      dense
-      color="secondary"
-      checked-icon="fas fa-face-smile"
-      unchecked-icon="fas fa-face-smile"
-      val="5"
-    />
-    <q-radio
-      v-model="mood"
-      size="xl"
-      dense
-      color="secondary"
-      checked-icon="fas fa-face-grin-beam"
-      unchecked-icon="fas fa-face-grin-beam"
-      val="6"
+      :checked-icon="emoji[1]"
+      :unchecked-icon="emoji[1]"
+      :val="emoji[0]"
     />
   </div>
 </template>
 
 <script setup>
 import { computed } from "vue";
+import { emojiMap } from "src/utils";
+
 const props = defineProps({
   modelValue: {
     type: String,
