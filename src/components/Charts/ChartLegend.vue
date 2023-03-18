@@ -17,7 +17,7 @@
         </div>
         <div class="item--name">
           <q-item-label :lines="3">
-            {{ item.name }}
+            {{ item.name }}({{ item.totalValue }})
           </q-item-label>
         </div>
       </div>
@@ -47,7 +47,7 @@ watch(showLabels, () => {
 });
 </script>
 
-<style  scoped>
+<style scoped>
 .legend {
   display: flex;
   padding: 15px;
