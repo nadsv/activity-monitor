@@ -3,12 +3,17 @@
     <div class="row q-mb-md row--justify-content">
       <DataFilters class="filter" />
     </div>
-    <div
-      class="charts row q-mb-md row--justify-content"
-      v-if="chartStore.allSeries.length"
-    >
-      <MonitoringCharts class="monitoring-charts" :typeOfUnites="'time'" />
-      <MonitoringCharts class="monitoring-charts" :typeOfUnites="'quantity'" />
+    <div class="charts row q-mb-md row--justify-content">
+      <MonitoringCharts
+        class="monitoring-charts"
+        :typeOfUnites="'time'"
+        v-if="showTimeChart"
+      />
+      <MonitoringCharts
+        class="monitoring-charts"
+        :typeOfUnites="'quantity'"
+        v-if="showQuantityChart"
+      />
     </div>
     <div
       class="charts row q-mb-md row--justify-content"
@@ -20,7 +25,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed } from "vue";
 import DailyNotes from "src/components/Charts/DailyNotes.vue";
 import MonitoringCharts from "../components/Charts/MonitoringCharts.vue";
 import DataFilters from "../components/Charts/DataFilters.vue";
@@ -29,6 +34,14 @@ import { useNotesStore } from "src/stores/notes";
 
 const chartStore = useChartStore();
 const notesStore = useNotesStore();
+
+let showQuantityChart = computed(
+  () => chartStore.allSeries.filter((item) => item.unit === "quantity").length
+);
+
+let showTimeChart = computed(
+  () => chartStore.allSeries.filter((item) => item.unit === "time").length
+);
 </script>
 
 <style scoped>

@@ -94,10 +94,6 @@ watch(
     calendarStore.isNewForm = true;
   }
 );
-
-onMounted(() => {
-  console.log("activities", props.activities);
-});
 </script>
 
 <style scoped>

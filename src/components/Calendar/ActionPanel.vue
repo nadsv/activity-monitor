@@ -48,10 +48,6 @@ const clearForm = () => {
     activities.value = calendarStore.activities;
   });
 };
-
-onMounted(() => {
-  console.log("action panel", props.activities);
-});
 </script>
 
 <style scoped>
